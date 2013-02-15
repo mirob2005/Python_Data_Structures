@@ -15,11 +15,11 @@ class LinkedList:
                 string += " "
             string += "["+ str(ptr.data)
             if(ptr.next == None):
-                string+="]->(None)"
+                string+="]->(None) "
             else:
                 string += "]->("+str(ptr.next.data)+") "
             ptr = ptr.next
-        return string + " > TAIL"
+        return string + "> TAIL"
     
     def insert(self, data):
         self.head = Node(data,self.head)

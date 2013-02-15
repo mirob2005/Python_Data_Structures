@@ -31,9 +31,9 @@ class CircularLinkedList:
                 ptr = ptr.next
                 if(ptr == self.head): break
         if(self.tail != None):
-            string+=(" > TAIL(%d)"%self.tail.data)
+            string+=("> TAIL(%d)"%self.tail.data)
         else:
-            string+= " > TAIL(None)"
+            string+= "> TAIL(None)"
         return string
     
     def insert(self, data):
@@ -90,12 +90,21 @@ class CircularLinkedList:
             return False
         ptr = self.head
         if(index==0):
-            self.head = self.head.next
-            ptr.next = None
-            ptr.prev = None
-            self.head.prev = self.tail
-            self.tail.next = self.head
-            return True
+            if(self.head == self.head.next):
+                self.head.next = None
+                self.head.prev = None
+                self.tail.next = None
+                self.tail.prev = None
+                self.tail = None
+                self.head = None
+                return True
+            else:
+                self.head = self.head.next
+                ptr.next = None
+                ptr.prev = None
+                self.head.prev = self.tail
+                self.tail.next = self.head
+                return True
         currentIndex=0
         while ptr.next != self.head:
             if(currentIndex+1 == index):
@@ -150,12 +159,21 @@ class CircularLinkedList:
         if(ptr == None):
             return False
         if(self.head.data == data):
-            self.head = self.head.next
-            ptr.next = None
-            ptr.prev = None
-            self.head.prev = self.tail
-            self.tail.next = self.head
-            return True
+            if(self.head == self.head.next):
+                self.head.next = None
+                self.head.prev = None
+                self.tail.next = None
+                self.tail.prev = None
+                self.tail = None
+                self.head = None
+                return True
+            else:
+                self.head = self.head.next
+                ptr.next = None
+                ptr.prev = None
+                self.head.prev = self.tail
+                self.tail.next = self.head
+                return True
         while ptr.next != self.head:
             if(ptr.next.data == data):
                 self.deletePtr(ptr)
@@ -220,15 +238,15 @@ class CircularLinkedList:
     def deleteList(self):
         ptr = self.head
         while self.head.next != self.head and self.head.prev != self.head:
-            print("\nDeleting %d" % self.head.data)
+            #print("\nDeleting %d" % self.head.data)
             self.head = self.head.next
             ptr.next = None
             ptr.prev = None
             self.head.prev = self.tail
             self.tail.next = self.head
             ptr = self.head
-            print("\t%s" % self)
-        print("\nDeleting %d" % self.head.data)
+            #print("\t%s" % self)
+        #print("\nDeleting %d" % self.head.data)
         self.head.next = None
         self.head.prev = None
         self.tail.next = None

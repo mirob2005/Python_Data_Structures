@@ -22,11 +22,11 @@ class DoublyLinkedList(LinkedList):
                 string += "("+ str(ptr.prev.data)+ ")<-["
             string += str(ptr.data)
             if(ptr.next == None):
-                string+="]->(None)"
+                string+="]->(None) "
             else:
                 string += "]->("+str(ptr.next.data)+") "
             ptr = ptr.next
-        return string + " > TAIL"
+        return string + "> TAIL"
     
     def insert(self, data):
         if(self.head==None):
@@ -88,7 +88,8 @@ class DoublyLinkedList(LinkedList):
         if(index==0):
             self.head = self.head.next
             ptr.next = None
-            self.head.prev = None
+            if(self.head != None):
+                self.head.prev = None
             return True
         currentIndex=0
         while ptr.next:
@@ -106,7 +107,8 @@ class DoublyLinkedList(LinkedList):
         if(self.head.data == data):
             self.head = self.head.next
             ptr.next = None
-            self.head.prev = None
+            if(self.head != None):
+                self.head.prev = None
             return True
         while ptr.next:
             if(ptr.next.data == data):
@@ -133,12 +135,12 @@ class DoublyLinkedList(LinkedList):
     def deleteList(self):
         ptr = self.head
         while self.head:
-            print("\nDeleting %d" % self.head.data)
+            #print("\nDeleting %d" % self.head.data)
             self.head = self.head.next
             ptr.next = None            
             if(self.head != None): self.head.prev = None
             ptr = self.head
-            print("\t%s" % self)
+            #print("\t%s" % self)
         self.head = None
         
     def copyList(self):

@@ -1,23 +1,23 @@
-from LinkedList_Single import LinkedList
-from LinkedList_Single import Node
+from LinkedList_Circular import CircularLinkedList
+from LinkedList_Circular import CircularNode
 import unittest
 
-class TestLinkedListSingle(unittest.TestCase):
+class TestLinkedListCircular(unittest.TestCase):
     
     def setUp(self):
-        self.A = LinkedList()
+        self.A = CircularLinkedList()
         for data in [3,2,1]:
             self.A.insert(data)
 
     def testEmpty(self):
-        emptyList = LinkedList()
-        expResult = "HEAD <> TAIL"
+        emptyList = CircularLinkedList()
+        expResult = "HEAD(None) <> TAIL(None)"
         result = str(emptyList)
         self.assertEqual(result, expResult)
         print("\ntestEmpty PASSED!")
         
     def testInsert(self):
-        expResult = "HEAD < [1]->(2) [2]->(3) [3]->(None) > TAIL"
+        expResult = "HEAD(1) < (3)<-[1]->(2) (1)<-[2]->(3) (2)<-[3]->(1) > TAIL(3)"
         result = str(self.A)
         self.assertEqual(result, expResult)
         print("\ntestInsert PASSED!")
@@ -25,7 +25,7 @@ class TestLinkedListSingle(unittest.TestCase):
     def testAppend(self):
         self.A.append(4)
         
-        expResult = "HEAD < [1]->(2) [2]->(3) [3]->(4) [4]->(None) > TAIL"
+        expResult = "HEAD(1) < (4)<-[1]->(2) (1)<-[2]->(3) (2)<-[3]->(4) (3)<-[4]->(1) > TAIL(4)"
         result = str(self.A)
         self.assertEqual(result, expResult)
         print("\ntestAppend PASSED!")
@@ -53,35 +53,35 @@ class TestLinkedListSingle(unittest.TestCase):
         
     def testUpdateIndex(self):
         boolResult = self.A.updateIndex(0,4)
-        expResult = "HEAD < [4]->(2) [2]->(3) [3]->(None) > TAIL"
+        expResult = "HEAD(4) < (3)<-[4]->(2) (4)<-[2]->(3) (2)<-[3]->(4) > TAIL(3)"
         result = str(self.A)
         self.assertTrue(boolResult)
         self.assertEqual(result, expResult)
         print("\ntestUpdateIndex #1 PASSED!")
         
         boolResult = self.A.updateIndex(1,5)
-        expResult = "HEAD < [4]->(5) [5]->(3) [3]->(None) > TAIL"
+        expResult = "HEAD(4) < (3)<-[4]->(5) (4)<-[5]->(3) (5)<-[3]->(4) > TAIL(3)"
         result = str(self.A)
         self.assertTrue(boolResult)
         self.assertEqual(result, expResult)
         print("\ntestUpdateIndex #2 PASSED!")
         
         boolResult = self.A.updateIndex(2,6)
-        expResult = "HEAD < [4]->(5) [5]->(6) [6]->(None) > TAIL"
+        expResult = "HEAD(4) < (6)<-[4]->(5) (4)<-[5]->(6) (5)<-[6]->(4) > TAIL(6)"
         result = str(self.A)
         self.assertTrue(boolResult)
         self.assertEqual(result, expResult)
         print("\ntestUpdateIndex #3 PASSED!")
         
         boolResult = self.A.updateIndex(3,7)
-        expResult = "HEAD < [4]->(5) [5]->(6) [6]->(None) > TAIL"
+        expResult = "HEAD(4) < (6)<-[4]->(5) (4)<-[5]->(6) (5)<-[6]->(4) > TAIL(6)"
         result = str(self.A)
         self.assertFalse(boolResult)
         self.assertEqual(result, expResult)
         print("\ntestUpdateIndex #4 PASSED!")
         
         boolResult = self.A.updateIndex(-1,7)
-        expResult = "HEAD < [4]->(5) [5]->(6) [6]->(None) > TAIL"
+        expResult = "HEAD(4) < (6)<-[4]->(5) (4)<-[5]->(6) (5)<-[6]->(4) > TAIL(6)"
         result = str(self.A)
         self.assertFalse(boolResult)
         self.assertEqual(result, expResult)
@@ -89,42 +89,42 @@ class TestLinkedListSingle(unittest.TestCase):
         
     def testDeleteIndex(self):
         boolResult = self.A.deleteIndex(4)
-        expResult = "HEAD < [1]->(2) [2]->(3) [3]->(None) > TAIL"
+        expResult = "HEAD(1) < (3)<-[1]->(2) (1)<-[2]->(3) (2)<-[3]->(1) > TAIL(3)"
         result = str(self.A)
         self.assertFalse(boolResult)
         self.assertEqual(result, expResult)
         print("\ntestDeleteIndex #1 PASSED!")
         
         boolResult = self.A.deleteIndex(2)
-        expResult = "HEAD < [1]->(2) [2]->(None) > TAIL"
+        expResult = "HEAD(1) < (2)<-[1]->(2) (1)<-[2]->(1) > TAIL(2)"
         result = str(self.A)
         self.assertTrue(boolResult)
         self.assertEqual(result, expResult)
         print("\ntestDeleteIndex #2 PASSED!")
         
         boolResult = self.A.deleteIndex(-1)
-        expResult = "HEAD < [1]->(2) [2]->(None) > TAIL"
+        expResult = "HEAD(1) < (2)<-[1]->(2) (1)<-[2]->(1) > TAIL(2)"
         result = str(self.A)
         self.assertFalse(boolResult)
         self.assertEqual(result, expResult)
         print("\ntestDeleteIndex #3 PASSED!")
         
         boolResult = self.A.deleteIndex(0)
-        expResult = "HEAD < [2]->(None) > TAIL"
+        expResult = "HEAD(2) < (2)<-[2]->(2) > TAIL(2)"
         result = str(self.A)
         self.assertTrue(boolResult)
         self.assertEqual(result, expResult)
         print("\ntestDeleteIndex #4 PASSED!")
         
         boolResult = self.A.deleteIndex(0)
-        expResult = "HEAD <> TAIL"
+        expResult = "HEAD(None) <> TAIL(None)"
         result = str(self.A)
         self.assertTrue(boolResult)
         self.assertEqual(result, expResult)
         print("\ntestDeleteIndex #5 PASSED!")
         
         boolResult = self.A.deleteIndex(0)
-        expResult = "HEAD <> TAIL"
+        expResult = "HEAD(None) <> TAIL(None)"
         result = str(self.A)
         self.assertFalse(boolResult)
         self.assertEqual(result, expResult)
@@ -132,35 +132,35 @@ class TestLinkedListSingle(unittest.TestCase):
         
     def testInsertBeforeIndex(self):
         boolResult = self.A.insertBeforeIndex(-1,0)
-        expResult = "HEAD < [1]->(2) [2]->(3) [3]->(None) > TAIL"
+        expResult = "HEAD(1) < (3)<-[1]->(2) (1)<-[2]->(3) (2)<-[3]->(1) > TAIL(3)"
         result = str(self.A)
         self.assertFalse(boolResult)
         self.assertEqual(result, expResult)
         print("\ntestInsertBeforeIndex #1 PASSED!")
         
         boolResult = self.A.insertBeforeIndex(0,4)
-        expResult = "HEAD < [4]->(1) [1]->(2) [2]->(3) [3]->(None) > TAIL"
+        expResult = "HEAD(4) < (3)<-[4]->(1) (4)<-[1]->(2) (1)<-[2]->(3) (2)<-[3]->(4) > TAIL(3)"
         result = str(self.A)
         self.assertTrue(boolResult)
         self.assertEqual(result, expResult)
         print("\ntestInsertBeforeIndex #2 PASSED!")
         
         boolResult = self.A.insertBeforeIndex(3,5)
-        expResult = "HEAD < [4]->(1) [1]->(2) [2]->(5) [5]->(3) [3]->(None) > TAIL"
+        expResult = "HEAD(4) < (3)<-[4]->(1) (4)<-[1]->(2) (1)<-[2]->(5) (2)<-[5]->(3) (5)<-[3]->(4) > TAIL(3)"
         result = str(self.A)
         self.assertTrue(boolResult)
         self.assertEqual(result, expResult)
         print("\ntestInsertBeforeIndex #3 PASSED!")
         
         boolResult = self.A.insertBeforeIndex(5,6)
-        expResult = "HEAD < [4]->(1) [1]->(2) [2]->(5) [5]->(3) [3]->(6) [6]->(None) > TAIL"
+        expResult = "HEAD(4) < (6)<-[4]->(1) (4)<-[1]->(2) (1)<-[2]->(5) (2)<-[5]->(3) (5)<-[3]->(6) (3)<-[6]->(4) > TAIL(6)"
         result = str(self.A)
         self.assertTrue(boolResult)
         self.assertEqual(result, expResult)
         print("\ntestInsertBeforeIndex #4 PASSED!")
         
         boolResult = self.A.insertBeforeIndex(7,6)
-        expResult = "HEAD < [4]->(1) [1]->(2) [2]->(5) [5]->(3) [3]->(6) [6]->(None) > TAIL"
+        expResult = "HEAD(4) < (6)<-[4]->(1) (4)<-[1]->(2) (1)<-[2]->(5) (2)<-[5]->(3) (5)<-[3]->(6) (3)<-[6]->(4) > TAIL(6)" 
         result = str(self.A)
         self.assertFalse(boolResult)
         self.assertEqual(result, expResult)
@@ -168,35 +168,35 @@ class TestLinkedListSingle(unittest.TestCase):
         
     def testInsertAfterIndex(self):
         boolResult = self.A.insertAfterIndex(-2,0)
-        expResult = "HEAD < [1]->(2) [2]->(3) [3]->(None) > TAIL"
+        expResult = "HEAD(1) < (3)<-[1]->(2) (1)<-[2]->(3) (2)<-[3]->(1) > TAIL(3)"
         result = str(self.A)
         self.assertFalse(boolResult)
         self.assertEqual(result, expResult)
         print("\ntestInsertAfterIndex #1 PASSED!")
         
         boolResult = self.A.insertAfterIndex(-1,4)
-        expResult = "HEAD < [4]->(1) [1]->(2) [2]->(3) [3]->(None) > TAIL"
+        expResult = "HEAD(4) < (3)<-[4]->(1) (4)<-[1]->(2) (1)<-[2]->(3) (2)<-[3]->(4) > TAIL(3)"
         result = str(self.A)
         self.assertTrue(boolResult)
         self.assertEqual(result, expResult)
         print("\ntestInsertAfterIndex #2 PASSED!")
         
         boolResult = self.A.insertAfterIndex(2,5)
-        expResult = "HEAD < [4]->(1) [1]->(2) [2]->(5) [5]->(3) [3]->(None) > TAIL"
+        expResult = "HEAD(4) < (3)<-[4]->(1) (4)<-[1]->(2) (1)<-[2]->(5) (2)<-[5]->(3) (5)<-[3]->(4) > TAIL(3)"
         result = str(self.A)
         self.assertTrue(boolResult)
         self.assertEqual(result, expResult)
         print("\ntestInsertAfterIndex #3 PASSED!")
         
         boolResult = self.A.insertAfterIndex(4,6)
-        expResult = "HEAD < [4]->(1) [1]->(2) [2]->(5) [5]->(3) [3]->(6) [6]->(None) > TAIL"
+        expResult = "HEAD(4) < (6)<-[4]->(1) (4)<-[1]->(2) (1)<-[2]->(5) (2)<-[5]->(3) (5)<-[3]->(6) (3)<-[6]->(4) > TAIL(6)"
         result = str(self.A)
         self.assertTrue(boolResult)
         self.assertEqual(result, expResult)
         print("\ntestInsertAfterIndex #4 PASSED!")
         
         boolResult = self.A.insertAfterIndex(6,6)
-        expResult = "HEAD < [4]->(1) [1]->(2) [2]->(5) [5]->(3) [3]->(6) [6]->(None) > TAIL"
+        expResult = "HEAD(4) < (6)<-[4]->(1) (4)<-[1]->(2) (1)<-[2]->(5) (2)<-[5]->(3) (5)<-[3]->(6) (3)<-[6]->(4) > TAIL(6)"
         result = str(self.A)
         self.assertFalse(boolResult)
         self.assertEqual(result, expResult)
@@ -204,35 +204,35 @@ class TestLinkedListSingle(unittest.TestCase):
         
     def testDeleteData(self):
         boolResult = self.A.deleteData(4)
-        expResult = "HEAD < [1]->(2) [2]->(3) [3]->(None) > TAIL"
+        expResult = "HEAD(1) < (3)<-[1]->(2) (1)<-[2]->(3) (2)<-[3]->(1) > TAIL(3)"
         result = str(self.A)
         self.assertFalse(boolResult)
         self.assertEqual(result, expResult)
         print("\ntestDeleteData #1 PASSED!")
         
         boolResult = self.A.deleteData(3)
-        expResult = "HEAD < [1]->(2) [2]->(None) > TAIL"
+        expResult = "HEAD(1) < (2)<-[1]->(2) (1)<-[2]->(1) > TAIL(2)"
         result = str(self.A)
         self.assertTrue(boolResult)
         self.assertEqual(result, expResult)
         print("\ntestDeleteData #2 PASSED!")
 
         boolResult = self.A.deleteData(1)
-        expResult = "HEAD < [2]->(None) > TAIL"
+        expResult = "HEAD(2) < (2)<-[2]->(2) > TAIL(2)"
         result = str(self.A)
         self.assertTrue(boolResult)
         self.assertEqual(result, expResult)
         print("\ntestDeleteData #3 PASSED!")
         
         boolResult = self.A.deleteData(2)
-        expResult = "HEAD <> TAIL"
+        expResult = "HEAD(None) <> TAIL(None)"
         result = str(self.A)
         self.assertTrue(boolResult)
         self.assertEqual(result, expResult)
         print("\ntestDeleteData #4 PASSED!")
         
         boolResult = self.A.deleteData(2)
-        expResult = "HEAD <> TAIL"
+        expResult = "HEAD(None) <> TAIL(None)"
         result = str(self.A)
         self.assertFalse(boolResult)
         self.assertEqual(result, expResult)
@@ -241,14 +241,14 @@ class TestLinkedListSingle(unittest.TestCase):
     def testDeleteAllData(self):
         self.A.append(1)
         boolResult = self.A.deleteAllData(1)
-        expResult = "HEAD < [2]->(3) [3]->(None) > TAIL"
+        expResult = "HEAD(2) < (3)<-[2]->(3) (2)<-[3]->(2) > TAIL(3)"
         result = str(self.A)
         self.assertTrue(boolResult)
         self.assertEqual(result, expResult)
         print("\ntestDeleteAllData #1 PASSED!")
         
         boolResult = self.A.deleteAllData(1)
-        expResult = "HEAD < [2]->(3) [3]->(None) > TAIL"
+        expResult = "HEAD(2) < (3)<-[2]->(3) (2)<-[3]->(2) > TAIL(3)"
         result = str(self.A)
         self.assertFalse(boolResult)
         self.assertEqual(result, expResult)
@@ -256,7 +256,7 @@ class TestLinkedListSingle(unittest.TestCase):
         
     def testDeleteList(self):
         self.A.deleteList()
-        expResult = "HEAD <> TAIL"
+        expResult = "HEAD(None) <> TAIL(None)"
         result = str(self.A)
         self.assertEqual(result, expResult)
         print("\ntestDeleteList PASSED!")
@@ -264,14 +264,14 @@ class TestLinkedListSingle(unittest.TestCase):
     def testInsertAfterEveryData(self):
         self.A.append(1)
         boolResult = self.A.insertAfterEveryData(1,4)
-        expResult = "HEAD < [1]->(4) [4]->(2) [2]->(3) [3]->(1) [1]->(4) [4]->(None) > TAIL"
+        expResult = "HEAD(1) < (4)<-[1]->(4) (1)<-[4]->(2) (4)<-[2]->(3) (2)<-[3]->(1) (3)<-[1]->(4) (1)<-[4]->(1) > TAIL(4)"
         result = str(self.A)
         self.assertTrue(boolResult)
         self.assertEqual(result, expResult)
         print("\ntestInsertAfterEveryData #1 PASSED!")
         
         boolResult = self.A.insertAfterEveryData(0,5)
-        expResult = "HEAD < [1]->(4) [4]->(2) [2]->(3) [3]->(1) [1]->(4) [4]->(None) > TAIL"
+        expResult = "HEAD(1) < (4)<-[1]->(4) (1)<-[4]->(2) (4)<-[2]->(3) (2)<-[3]->(1) (3)<-[1]->(4) (1)<-[4]->(1) > TAIL(4)"
         result = str(self.A)
         self.assertFalse(boolResult)
         self.assertEqual(result, expResult)
@@ -280,28 +280,28 @@ class TestLinkedListSingle(unittest.TestCase):
     def testInsertBeforeEveryData(self):
         self.A.append(1)
         boolResult = self.A.insertBeforeEveryData(1,4)
-        expResult = "HEAD < [4]->(1) [1]->(2) [2]->(3) [3]->(4) [4]->(1) [1]->(None) > TAIL"
+        expResult = "HEAD(4) < (1)<-[4]->(1) (4)<-[1]->(2) (1)<-[2]->(3) (2)<-[3]->(4) (3)<-[4]->(1) (4)<-[1]->(4) > TAIL(1)"
         result = str(self.A)
         self.assertTrue(boolResult)
         self.assertEqual(result, expResult)
         print("\ntestInsertBeforeEveryData #1 PASSED!")
         
         boolResult = self.A.insertBeforeEveryData(0,5)
-        expResult = "HEAD < [4]->(1) [1]->(2) [2]->(3) [3]->(4) [4]->(1) [1]->(None) > TAIL"
+        expResult = "HEAD(4) < (1)<-[4]->(1) (4)<-[1]->(2) (1)<-[2]->(3) (2)<-[3]->(4) (3)<-[4]->(1) (4)<-[1]->(4) > TAIL(1)"
         result = str(self.A)
         self.assertFalse(boolResult)
         self.assertEqual(result, expResult)
         print("\ntestInsertBeforeEveryData #2 PASSED!")    
     
     def testCopyList(self):
-        B = LinkedList()
+        B = CircularLinkedList()
         B = self.A.copyList()
         
         self.A.append(4)
         B.append(5)
         
-        expAResult = "HEAD < [1]->(2) [2]->(3) [3]->(4) [4]->(None) > TAIL"
-        expBResult = "HEAD < [1]->(2) [2]->(3) [3]->(5) [5]->(None) > TAIL"
+        expAResult = "HEAD(1) < (4)<-[1]->(2) (1)<-[2]->(3) (2)<-[3]->(4) (3)<-[4]->(1) > TAIL(4)"
+        expBResult = "HEAD(1) < (5)<-[1]->(2) (1)<-[2]->(3) (2)<-[3]->(5) (3)<-[5]->(1) > TAIL(5)"
         Aresult = str(self.A)
         Bresult = str(B)
         
