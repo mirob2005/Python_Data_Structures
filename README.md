@@ -1,4 +1,4 @@
-Python_Data_Structures
+Python Data Structures
 ======================
 Linked List Operations:
 - insert
