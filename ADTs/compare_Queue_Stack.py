@@ -1,4 +1,4 @@
-from Queue import Queue
+from Queue_head import Queue
 from Stack import Stack
 
 myQ = Queue()
