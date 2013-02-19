@@ -33,29 +33,38 @@ class BST:
     def insert(self, key):
         if(self.root == None):
             self.root = Node(key,None,None)
+            return True
         else:
             ptr = self.root
             while ptr:
                 if(key < ptr.key):
                     if(ptr.left == None):
                         ptr.left = Node(key, None, None)
-                        return
+                        return True
                     else:
                         ptr = ptr.left
                 elif(key > ptr.key):
                     if(ptr.right == None):
                         ptr.right = Node(key, None, None)
-                        return
+                        return True
                     else:
                         ptr = ptr.right
                 else:
-                    print("Key %s already exists in BST!"% key)
-                    return
+                    return False
                 
     def find(self, key):
-        pass
+        ptr = self.root
+        while ptr:
+            if(key == ptr.key):
+                return True
+            elif(key > ptr.key):
+                ptr = ptr.right
+            else:
+                ptr = ptr.left
+        return False
     
     def delete(self, key):
+        #alternate between using inorder predecessor and successor
         pass
     
     def traverseBFS(self):
@@ -144,17 +153,21 @@ class BST:
         return keys
         
     def copyTree(self):
-        pass
+        copy = BST()
+        dfsS = Stack()
+        dfsS.push(self.root)
+        cur = dfsS.pop()
+        while cur:
+            copy.insert(cur.key)
+            if(cur.right):
+                dfsS.push(cur.right)
+            if(cur.left):
+                dfsS.push(cur.left)
+            cur = dfsS.pop()
+        return copy
     
-if __name__ == '__main__':
-    myT = BST()
-        
-    for data in [5,2,3,1,0,4,7,6,9,8,10]:
-        myT.insert(data)
-
-    if(myT.find(1)):
-        print("1 is in BST")
-    else:
-        print("1 is not in BST")
-
-    print(myT)
+    def findMin(self):
+        ptr = self.root
+        while ptr.left:
+            ptr = ptr.left
+        return ptr.key
