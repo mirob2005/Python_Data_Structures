@@ -26,24 +26,24 @@ class TestBST(unittest.TestCase):
             
         self.treeList = [self.perfect, self.degenerate, self.balanced, self.rightHeavy, self.leftHeavy]
         
+        self.empty = BST_iter()
+        
     def testEmpty(self):
-        tree = BST_iter()
         expResult = str([])
-        self.assertEqual(expResult, tree.printBFS())
-        self.assertEqual(expResult, tree.printDFSinorder())
-        self.assertEqual(expResult, tree.printDFSpostorder())
-        self.assertEqual(expResult, tree.printDFSpreorder())
+        self.assertEqual(expResult, self.empty.printBFS())
+        self.assertEqual(expResult, self.empty.printDFSinorder())
+        self.assertEqual(expResult, self.empty.printDFSpostorder())
+        self.assertEqual(expResult, self.empty.printDFSpreorder())
         print("\ntestEmpty PASSED")
         
     def testInsert(self):
-        tree = BST_iter()
-        boolResult = tree.insert(7)
+        boolResult = self.empty.insert(7)
         expResult = str([7])
         self.assertTrue(boolResult)
-        self.assertEqual(expResult, tree.printBFS())
-        self.assertEqual(expResult, tree.printDFSinorder())
-        self.assertEqual(expResult, tree.printDFSpostorder())
-        self.assertEqual(expResult, tree.printDFSpreorder())
+        self.assertEqual(expResult, self.empty.printBFS())
+        self.assertEqual(expResult, self.empty.printDFSinorder())
+        self.assertEqual(expResult, self.empty.printDFSpostorder())
+        self.assertEqual(expResult, self.empty.printDFSpreorder())
         print("\ntestInsert PASSED")
         
     def testBFS(self):
@@ -104,6 +104,8 @@ class TestBST(unittest.TestCase):
             self.assertFalse(tree.find(15))
             self.assertFalse(tree.find(-1))
             self.assertTrue(tree.find(14))
+            
+        self.assertFalse(self.empty.find(0))
         print("\ntestFind PASSED")
         
     def testDuplicateInsert(self):
@@ -169,10 +171,154 @@ class TestBST(unittest.TestCase):
         expResult = 0
         for tree in self.treeList:
             self.assertEqual(expResult,tree.findMin())
+            
+        self.assertEqual(None, self.empty.findMin())
         print("\ntestFindMin PASSED")
         
-    def testDelete(self):
-        pass
+    def testFindMax(self):
+        expResult = 14
+        for tree in self.treeList:
+            self.assertEqual(expResult,tree.findMax())
+            
+        self.assertEqual(None, self.empty.findMax())
+        print("\ntestFindMax PASSED")
+        
+    def testDeleteLeaf(self):
+        #Test for deleting a leaf
+        boolResults = []
+        for tree in self.treeList:
+            boolResults.append(tree.delete(14))
+            
+        for result in boolResults:
+            self.assertTrue(result)
+            
+        expResult = str([7,3,11,1,5,9,13,0,2,4,6,8,10,12])
+        self.assertEqual(expResult, self.perfect.printBFS())
+        
+        expResult = str([0,1,2,3,4,5,6,7,8,9,10,11,12,13])
+        self.assertEqual(expResult, self.degenerate.printBFS())
+        
+        expResult = str([7,5,12,3,6,10,13,1,4,9,11,0,2,8])
+        self.assertEqual(expResult, self.balanced.printBFS())
+        
+        expResult = str([5,3,10,1,4,7,13,0,2,6,9,11,8,12])
+        self.assertEqual(expResult, self.rightHeavy.printBFS())
+        
+        expResult = str([11,6,13,3,8,12,1,4,7,9,0,2,5,10])
+        self.assertEqual(expResult, self.leftHeavy.printBFS())
+
+        print("\ntestDeleteLeaf PASSED")
+        
+    def testDeleteFail(self):
+        #Test for attempting to delete a nonexistent node
+        boolResults = []
+        for tree in self.treeList:
+            boolResults.append(tree.delete(15))
+            
+        for result in boolResults:
+            self.assertFalse(result)
+            
+        self.assertFalse(self.empty.delete(14))
+            
+        #Test to make sure previous trees were not changed
+        expResult = str([7,3,11,1,5,9,13,0,2,4,6,8,10,12,14])
+        self.assertEqual(expResult, self.perfect.printBFS())
+        
+        expResult = str([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14])
+        self.assertEqual(expResult, self.degenerate.printBFS())
+        
+        expResult = str([7,5,12,3,6,10,13,1,4,9,11,14,0,2,8])
+        self.assertEqual(expResult, self.balanced.printBFS())
+        
+        expResult = str([5,3,10,1,4,7,13,0,2,6,9,11,14,8,12])
+        self.assertEqual(expResult, self.rightHeavy.printBFS())
+        
+        expResult = str([11,6,13,3,8,12,14,1,4,7,9,0,2,5,10])
+        self.assertEqual(expResult, self.leftHeavy.printBFS())          
+            
+            
+        print("\ntestDeleteFail PASSED")
+            
+        
+    def testDeleteInternal(self):
+        #Test for deleting an internal node
+        for tree in self.treeList:
+            tree.delete(3)
+            
+        expResultLesser = "\[7, 2, 11, 1, 5, 9, 13, 0, 4, 6, 8, 10, 12, 14\]"
+        expResultGreater = "\[7, 4, 11, 1, 5, 9, 13, 0, 2, 6, 8, 10, 12, 14\]"
+        self.assertRegex(self.perfect.printBFS(), ('%s|%s' %
+                                                   (expResultLesser,expResultGreater)))
+        
+        expResultLesser = "\[0, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14\]"
+        expResultGreater = "\[0, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14\]"
+        self.assertRegex(self.degenerate.printBFS(), ('%s|%s' %
+                                                   (expResultLesser,expResultGreater)))
+        
+        expResultLesser = "\[7, 5, 12, 2, 6, 10, 13, 1, 4, 9, 11, 14, 0, 8\]"
+        expResultGreater = "\[7, 5, 12, 4, 6, 10, 13, 1, 9, 11, 14, 0, 2, 8\]"
+        self.assertRegex(self.balanced.printBFS(), ('%s|%s' %
+                                                   (expResultLesser,expResultGreater)))
+        
+        expResultLesser = "\[5, 2, 10, 1, 4, 7, 13, 0, 6, 9, 11, 14, 8, 12\]"
+        expResultGreater = "\[5, 4, 10, 1, 7, 13, 0, 2, 6, 9, 11, 14, 8, 12\]"
+        self.assertRegex(self.rightHeavy.printBFS(), ('%s|%s' %
+                                                   (expResultLesser,expResultGreater)))
+        
+        expResultLesser = "\[11, 6, 13, 2, 8, 12, 14, 1, 4, 7, 9, 0, 5, 10\]"
+        expResultGreater = "\[11, 6, 13, 4, 8, 12, 14, 1, 5, 7, 9, 0, 2, 10\]"
+        self.assertRegex(self.leftHeavy.printBFS(), ('%s|%s' %
+                                                   (expResultLesser,expResultGreater)))
+        
+        print("\ntestDeleteInternal PASSED")
+        
+    def testDeleteRoot(self):
+        #Test for deleting the root
+        self.balanced.delete(7)
+        self.perfect.delete(7)
+        self.degenerate.delete(0)
+        self.rightHeavy.delete(5)
+        self.leftHeavy.delete(11)
+            
+        expResultLesser = "\[6, 3, 11, 1, 5, 9, 13, 0, 2, 4, 8, 10, 12, 14\]"
+        expResultGreater = "\[8, 3, 11, 1, 5, 9, 13, 0, 2, 4, 6, 10, 12, 14\]"
+        self.assertRegex(self.perfect.printBFS(), ('%s|%s' %
+                                                   (expResultLesser,expResultGreater)))
+        
+        expResultLesser = "\[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14\]"
+        expResultGreater = "\[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14\]"
+        self.assertRegex(self.degenerate.printBFS(), ('%s|%s' %
+                                                   (expResultLesser,expResultGreater)))
+        
+        expResultLesser = "\[6, 5, 12, 3, 10, 13, 1, 4, 9, 11, 14, 0, 2, 8\]"
+        expResultGreater = "\[8, 5, 12, 3, 6, 10, 13, 1, 4, 9, 11, 14, 0, 2\]"
+        self.assertRegex(self.balanced.printBFS(), ('%s|%s' %
+                                                   (expResultLesser,expResultGreater)))
+        
+        expResultLesser = "\[4, 3, 10, 1, 7, 13, 0, 2, 6, 9, 11, 14, 8, 12\]"
+        expResultGreater = "\[6, 3, 10, 1, 4, 7, 13, 0, 2, 9, 11, 14, 8, 12\]"
+        self.assertRegex(self.rightHeavy.printBFS(), ('%s|%s' %
+                                                   (expResultLesser,expResultGreater)))
+        
+        expResultLesser = "\[10, 6, 13, 3, 8, 12, 14, 1, 4, 7, 9, 0, 2, 5\]"
+        expResultGreater = "\[12, 6, 13, 3, 8, 14, 1, 4, 7, 9, 0, 2, 5, 10\]"
+        self.assertRegex(self.leftHeavy.printBFS(), ('%s|%s' %
+                                                   (expResultLesser,expResultGreater)))
+        
+        print("\ntestDeleteRoot PASSED")
+        
+    def testListSort(self):
+        listToSort = [2,3,5,1,6,7,89,8,4,12,34,99,77,32]
+        
+        sortingTree = BST_iter()
+        boolResult = sortingTree.insertList(listToSort)
+        
+        self.assertTrue(boolResult)
+        
+        listToSort.sort()
+        self.assertEqual(sortingTree.traverseDFSinorder(), listToSort)
+        
+        print("\ntestListSort PASSED")
     
 if __name__ == '__main__':
     unittest.main()
