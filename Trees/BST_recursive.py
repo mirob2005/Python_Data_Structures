@@ -40,9 +40,97 @@ class BST(BST_iter):
                 return False
             return self.find(key,root.left)
     
-    def delete(self, key):
+    def delete(self, key, root=None):
         #alternate between using inorder predecessor and successor
-        pass
+        if(not root):
+            if(not self.root):
+                return False
+            root = self.root
+        if(key == root.key):
+            #If leaf node:
+            if(not root.left and not root.right):
+                #root node
+                if(not root.parent):
+                    self.root = None
+                elif(root.parent.right == root):
+                    root.parent.right = None
+                else:
+                    root.parent.left = None
+                root = None
+                return True
+            #If only 1 child (right)
+            elif(not root.left and root.right):
+                #root node
+                if(not root.parent):
+                    self.root = root.right
+                elif(root.parent.right == root):
+                    root.parent.right = root.right
+                else:
+                    root.parent.left = root.right
+                root.right.parent = root.parent
+                root = None
+                return True
+            #If only 1 child (left)
+            elif(root.left and not root.right):
+                #root node
+                if(not root.parent):
+                    self.root = root.left
+                if(root.parent.right == root):
+                    root.parent.right = root.left
+                else:
+                    root.parent.left = root.left
+                root.left.parent = root.parent
+                root = None                    
+                return True
+            #If 2 children
+            else:
+                if(self.replaceWithSuccessor):
+                    #Greatest Right Child (inorder successor)
+                    childptr = root.right
+                    while childptr.left:
+                        childptr = childptr.left
+                    root.key = childptr.key
+                    #if replacement node has a right child
+                    if(childptr.right):
+                        if(childptr.parent.right == childptr):
+                            childptr.parent.right = childptr.right
+                        else:
+                            childptr.parent.left = childptr.right
+                        childptr.right.parent = childptr.parent
+                    else:
+                        if(childptr.parent.right == childptr):
+                            childptr.parent.right = None
+                        else:
+                            childptr.parent.left = None
+                    childptr = None
+                else:
+                    #Greatest Left Child (inorder predecessor)
+                    childptr = root.left
+                    while childptr.right:
+                        childptr = childptr.right
+                    root.key = childptr.key
+                    #if replacement node has a left child
+                    if(childptr.left):
+                        if(childptr.parent.right == childptr):
+                            childptr.parent.right = childptr.left
+                        else:
+                            childptr.parent.left = childptr.left
+                        childptr.left.parent = childptr.parent
+                    else:
+                        if(childptr.parent.right == childptr):
+                            childptr.parent.right = None
+                        else:
+                            childptr.parent.left = None
+                    childptr = None
+                self.replaceWithSuccessor = not self.replaceWithSuccessor
+                return True
+        elif(key > root.key):
+            if(root.right):
+                return self.delete(key, root.right)
+        else:
+            if(root.left):
+                return self.delete(key,root.left)
+        return False
     
     def traverseDFSpreorder(self, root = True):
         # Enables inheritance from BST_iterative (assumes root if none provided)
@@ -70,11 +158,6 @@ class BST(BST_iter):
         if(not root):
             return []
         return self.traverseDFSpostorder(root.left) + self.traverseDFSpostorder(root.right) + [root.key]
-    
-    def copyTree(self):
-        copy = BST()
-        copy.insertList(self.traverseDFSpreorder(self.root))
-        return copy
     
     def findMin(self, root=None):
         if(not root):

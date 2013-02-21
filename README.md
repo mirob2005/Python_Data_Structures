@@ -43,6 +43,15 @@ Binary Search Tree Operations:
 
 Types:
 - Iterative (uses Queue(head ptr) and Stack for traversals)
-- Recursive (not done)
+- Recursive (inherits from iterative approach, reimplements insert,find,delete,DFS,findMin,findMax)
 
-Unit Tests to test each operation
+Unit Tests to test each operation for both types
+
+TODO:
+- Heap (impl. Priority Queue)
+- Tries
+- Hash Table
+- Self-balancing BST - Red-Black Tree, Splay Tree, AVL Tree
+- Graphs (various types), impl. objects/ptrs, adjacency L/M, incidence L/M
+- Sorting - merge sort, quicksort
+
