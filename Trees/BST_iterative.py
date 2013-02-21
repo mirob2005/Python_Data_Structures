@@ -248,18 +248,7 @@ class BST:
         
     def copyTree(self):
         copy = BST()
-        if(not self.root):
-            return copy
-        dfsS = Stack()
-        dfsS.push(self.root)
-        cur = dfsS.pop()
-        while cur:
-            copy.insert(cur.key)
-            if(cur.right):
-                dfsS.push(cur.right)
-            if(cur.left):
-                dfsS.push(cur.left)
-            cur = dfsS.pop()
+        copy.insertList(self.traverseDFSpreorder())
         return copy
     
     def findMin(self):
