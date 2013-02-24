@@ -1,3 +1,10 @@
+#Michael Robertson
+#mirob2005@gmail.com
+#Completed: 2/18/2013
+
+# Typical Queue. Only has head ptr. New items go to the end.
+#   Returned values come from the head.
+
 class Element:
     def __init__(self, data, next):
         self.data = data

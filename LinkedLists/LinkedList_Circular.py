@@ -1,6 +1,12 @@
+#Michael Robertson
+#mirob2005@gmail.com
+#Completed: 2/13/2013
+
+# Typical Circular Linked List with head and tail ptr. Common operations included.
+# Inherits __init__ from DoublyNode
+
 from LinkedList_Double import DoublyNode
 
-#Inherits __init__ from DoublyNode
 class CircularNode(DoublyNode):
     pass
 

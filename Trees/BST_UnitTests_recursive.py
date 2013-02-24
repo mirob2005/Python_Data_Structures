@@ -1,3 +1,7 @@
+#Michael Robertson
+#mirob2005@gmail.com
+#Completed: 2/21/2013
+
 from BST_recursive import BST as BST_rec
 import unittest
 

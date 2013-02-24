@@ -1,7 +1,15 @@
+#Michael Robertson
+#mirob2005@gmail.com
+#Completed: 2/21/2013
+
+# Implements a Binary Search Tree that uses a queue for BFS traversal,
+#   and recursion for DFS traversals. Alternates between replacing a deleted
+#   node with the inorder predecessor and inorder successor to help
+#   balancing.  Inherits BFS, insertList, __str__, print methods, and Node
+#   class from iterative approach since recursion is not needed for these.
+
 from BST_iterative import BST as BST_iter
 from BST_iterative import Node
-#Inherit BFS, insertList, __str__, print methods,
-#and Node class from iterative approach
         
 class BST(BST_iter):
     def insert(self, key, root=None):

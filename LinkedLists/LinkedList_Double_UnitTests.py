@@ -1,3 +1,7 @@
+#Michael Robertson
+#mirob2005@gmail.com
+#Completed: 2/14/2013
+
 from LinkedList_Double import DoublyLinkedList
 from LinkedList_Double import DoublyNode
 import unittest

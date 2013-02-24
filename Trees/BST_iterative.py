@@ -1,3 +1,12 @@
+#Michael Robertson
+#mirob2005@gmail.com
+#Completed: 2/19/2013
+
+# Implements a Binary Search Tree that uses a queue for BFS traversal,
+#   and a stack for DFS traversals. Alternates between replacing a deleted
+#   node with the inorder predecessor and inorder successor to help
+#   balancing. The stack allows me to avoid recursion in this implementation.
+
 from ADTs.Queue_head import Queue
 from ADTs.Stack import Stack
 

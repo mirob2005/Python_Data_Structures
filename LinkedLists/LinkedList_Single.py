@@ -1,3 +1,9 @@
+#Michael Robertson
+#mirob2005@gmail.com
+#Completed: 2/13/2013
+
+# Typical Single Linked List with head ptr only. Common operations included.
+
 class Node:
     def __init__(self, data, next):
         self.data = data

@@ -1,3 +1,11 @@
+#Michael Robertson
+#mirob2005@gmail.com
+#Completed: 2/13/2013
+
+# Typical Double Linked List with head ptr only. Common operations included.
+# Inherits __init__ , returnIndex(index), updateIndex(index), findMthToLastNode(M)
+#   from Single Linked List.
+
 from LinkedList_Single import LinkedList
 from LinkedList_Single import Node
 
@@ -8,7 +16,6 @@ class DoublyNode(Node):
         self.prev = prev
         
 class DoublyLinkedList(LinkedList):
-    #Inherits __init__ , returnIndex(index), updateIndex(index), findMthToLastNode(M)
         
     def __str__(self):
         ptr = self.head

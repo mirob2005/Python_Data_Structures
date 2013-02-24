@@ -1,3 +1,7 @@
+#Michael Robertson
+#mirob2005@gmail.com
+#Completed: 2/13/2013
+
 from LinkedList_Single import LinkedList
 from LinkedList_Single import Node
 import unittest

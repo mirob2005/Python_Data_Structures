@@ -1,11 +1,11 @@
 Python Data Structures
 ======================
-ADTS:
+*ADTS:*
 - Queue with head and tail ptr, insert new at head, remove old at tail
 - Queue with only head ptr, remove old at head, append new to the end
 - Stack (push/pop at head)
 
-Linked List Operations:
+*Linked List Operations:*
 - insert
 - append
 - returnIndex
@@ -21,14 +21,14 @@ Linked List Operations:
 - copyList
 - findMthToLastNode
 
-Types:
+*Types:*
 - Single LL with head pointer
 - Double LL with head pointer
 - Circular LL with head & tail pointers
 
 Unit Tests to test all 3 types and each operation
 
-Binary Search Tree Operations:
+*Binary Search Tree Operations:*
 - insert
 - insertList
 - find
@@ -41,14 +41,23 @@ Binary Search Tree Operations:
 - findMin
 - findMax
 
-Types:
+*Types:*
 - Iterative (uses Queue(head ptr) and Stack for traversals)
 - Recursive (inherits from iterative approach, reimplements insert,find,delete,DFS,findMin,findMax)
 
 Unit Tests to test each operation for both types
 
-TODO:
-- Heap (impl. Priority Queue)
+*Binary Heap Operations:*
+- traverseBFS
+- insert (with heapifyUp to ensure heap property)
+- insertList
+- delete (with heapifyDown to ensure heap property)
+
+Units Tests to  test each operation and to ensure proper tracking
+of next insert/delete location to ensure shape property
+
+*TODO:*
+- Priority Queue using Binary Heap
 - Tries
 - Hash Table
 - Self-balancing BST - Red-Black Tree, Splay Tree, AVL Tree

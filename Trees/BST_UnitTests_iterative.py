@@ -1,3 +1,7 @@
+#Michael Robertson
+#mirob2005@gmail.com
+#Completed: 2/19/2013
+
 from BST_iterative import BST as BST_iter
 import unittest
 

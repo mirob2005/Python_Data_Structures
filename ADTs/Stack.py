@@ -1,3 +1,9 @@
+#Michael Robertson
+#mirob2005@gmail.com
+#Completed: 2/17/2013
+
+# Typical stack, all operations act on the head/top of the stack.
+
 class Element:
     def __init__(self, data, next):
         self.data = data

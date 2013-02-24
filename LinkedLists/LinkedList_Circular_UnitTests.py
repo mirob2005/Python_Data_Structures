@@ -1,3 +1,7 @@
+#Michael Robertson
+#mirob2005@gmail.com
+#Completed: 2/14/2013
+
 from LinkedList_Circular import CircularLinkedList
 from LinkedList_Circular import CircularNode
 import unittest
