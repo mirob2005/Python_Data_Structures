@@ -151,7 +151,32 @@ class BinaryHeap:
             else:
                 return
         self.heapifyDown(ptr)
-
+        
+    def merge(self, heap):
+        heapData = heap.returnBFS()
+        self.insertList(heapData)
+    
+    def peek(self):
+        return self.root.key if self.root else None
+        
+    def returnBFS(self):
+        keys = []
+        bfsQ = Queue()
+        bfsQ.enQueue(self.root)
+        cur = bfsQ.deQueue()
+        while cur:
+            keys.append(cur.key)
+            if(cur.left):
+                bfsQ.enQueue(cur.left)
+            if(cur.right):
+                bfsQ.enQueue(cur.right)
+            cur = bfsQ.deQueue()
+        return keys
+    
+    def copyHeap(self):
+        copy  = BinaryHeap()
+        copy.insertList(self.returnBFS())
+        return copy
 
 if __name__ == '__main__':
     
@@ -195,3 +220,12 @@ if __name__ == '__main__':
     print("After Inserting %d :%s\n"%(8,bh))
     bh.insert(9)
     print("After Inserting %d :%s\n"%(9,bh))
+    
+    print("PEEK %s"%bh.peek())
+    print(bh)
+    
+    bh2 = BinaryHeap()
+    bh2.insertList([1,2,3,10,7])
+    bh.merge(bh2)
+    print(bh)
+    print(bh2)

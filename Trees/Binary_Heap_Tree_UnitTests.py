@@ -2,7 +2,7 @@
 #mirob2005@gmail.com
 #Completed: 2/23/2013
 
-from Binary_Heap import BinaryHeap
+from Binary_Heap_Tree_Structure import BinaryHeap
 import unittest
 
 class TestBST(unittest.TestCase):
@@ -171,6 +171,29 @@ class TestBST(unittest.TestCase):
         self.assertEqual(result, expResult)
         self.assertTrue(boolResult)
         
+        #CHECK MIDDLE INSERT
+        boolResult = self.tester.insert(10)
+        expResult = "\n15 - (None|14, 13)\n14 - (15|10, 8)\n13 - (15|10, 12)\n"\
+                    "10 - (14|9, 3)\n8 - (14|2, 7)\n10 - (13|1, 5)\n12 - (13|4, 11)\n"\
+                    "9 - (10|0, 6)\n3 - (10|None, None)\n2 - (8|None, None)\n"\
+                    "7 - (8|None, None)\n1 - (10|None, None)\n5 - (10|None, None)\n"\
+                    "4 - (12|None, None)\n11 - (12|None, None)\n0 - (9|None, None)\n"\
+                    "6 - (9|None, None)"
+        result = self.tester.traverseBFS()
+        self.assertEqual(result, expResult)
+        self.assertTrue(boolResult)
+        #CHECK LEAF INSERT / NEGATIVE VALUES
+        boolResult = self.tester.insert(-1)
+        expResult = "\n15 - (None|14, 13)\n14 - (15|10, 8)\n13 - (15|10, 12)\n"\
+                    "10 - (14|9, 3)\n8 - (14|2, 7)\n10 - (13|1, 5)\n12 - (13|4, 11)\n"\
+                    "9 - (10|0, 6)\n3 - (10|-1, None)\n2 - (8|None, None)\n"\
+                    "7 - (8|None, None)\n1 - (10|None, None)\n5 - (10|None, None)\n"\
+                    "4 - (12|None, None)\n11 - (12|None, None)\n0 - (9|None, None)\n"\
+                    "6 - (9|None, None)\n-1 - (3|None, None)"
+        result = self.tester.traverseBFS()
+        self.assertEqual(result, expResult)
+        self.assertTrue(boolResult)
+        
         print("\ntestInsert PASSED")
     
     def testInsertList(self):
@@ -186,7 +209,71 @@ class TestBST(unittest.TestCase):
         self.assertEqual(result, expResult)
         
         print("\ntestInsertList PASSED")
+        
+    def testPeek(self):
+        alist = [x for x in range(16)]
+        boolResult = self.tester.insertList(alist)
+        expResult = "\n15 - (None|14, 13)\n14 - (15|9, 8)\n13 - (15|10, 12)\n"\
+                    "9 - (14|6, 3)\n8 - (14|2, 7)\n10 - (13|1, 5)\n12 - (13|4, 11)\n"\
+                    "6 - (9|0, None)\n3 - (9|None, None)\n2 - (8|None, None)\n"\
+                    "7 - (8|None, None)\n1 - (10|None, None)\n5 - (10|None, None)\n"\
+                    "4 - (12|None, None)\n11 - (12|None, None)\n0 - (6|None, None)"
+        result = self.tester.traverseBFS()
+        self.assertTrue(boolResult)
+        self.assertEqual(result, expResult)
+        
+        peek = self.tester.peek()
+        self.assertEqual(peek,15)
+        self.assertEqual(self.empty.peek(),None)
+        print("\ntestPeek PASSED")
+        
+    def testMerge(self):
+        alist = [x for x in range(14)]
+        boolResult = self.tester.insertList(alist)
+        expResult = "\n13 - (None|9, 12)\n9 - (13|6, 8)\n12 - (13|10, 11)\n"\
+                    "6 - (9|0, 3)\n8 - (9|2, 7)\n10 - (12|1, 5)\n11 - (12|4, None)\n"\
+                    "0 - (6|None, None)\n3 - (6|None, None)\n2 - (8|None, None)\n"\
+                    "7 - (8|None, None)\n1 - (10|None, None)\n5 - (10|None, None)\n"\
+                    "4 - (11|None, None)"
+        result = self.tester.traverseBFS()
+        self.assertEqual(result, expResult)
+        self.assertTrue(boolResult)
+        
+        blist = [x for x in range(14,16)]
+        boolResult = self.empty.insertList(blist)
+        expResult = "\n15 - (None|14, None)\n14 - (15|None, None)"
+        result = self.empty.traverseBFS()
+        self.assertEqual(result, expResult)
+        self.assertTrue(boolResult)
+        
+        self.tester.merge(self.empty)
+        expResult = "\n15 - (None|14, 13)\n14 - (15|9, 8)\n13 - (15|10, 12)\n"\
+                    "9 - (14|6, 3)\n8 - (14|2, 7)\n10 - (13|1, 5)\n12 - (13|4, 11)\n"\
+                    "6 - (9|0, None)\n3 - (9|None, None)\n2 - (8|None, None)\n"\
+                    "7 - (8|None, None)\n1 - (10|None, None)\n5 - (10|None, None)\n"\
+                    "4 - (12|None, None)\n11 - (12|None, None)\n0 - (6|None, None)"
+        result = self.tester.traverseBFS()
+        self.assertEqual(result, expResult)
+        
+        print("\ntestMerge PASSED")
     
+    def testCopyHeap(self):
+        boolResult = self.tester.insertList([0,1,2,3,4,5])
+        expResult = "\n5 - (None|3, 4)\n3 - (5|0, 2)\n4 - (5|1, None)\n"\
+                    "0 - (3|None, None)\n2 - (3|None, None)\n1 - (4|None, None)"
+        result = self.tester.traverseBFS()
+        self.assertTrue(boolResult)
+        self.assertEqual(result, expResult)
+        
+        copy = self.tester.copyHeap()
+        expResult = "\n5 - (None|3, 4)\n3 - (5|0, 2)\n4 - (5|1, None)\n"\
+                    "0 - (3|None, None)\n2 - (3|None, None)\n1 - (4|None, None)"
+        result = copy.traverseBFS()
+        self.assertTrue(boolResult)
+        self.assertEqual(result, expResult)
+        
+        print("\ntestCopyHeap PASSED")
+        
     def testDelete(self):
         #Test to confirm valid data before deletes
         alist = [x for x in range(16)]
