@@ -4,6 +4,7 @@ Python Data Structures
 - Queue with head and tail ptr, insert new at head, remove old at tail
 - Queue with only head ptr, remove old at head, append new to the end
 - Stack (push/pop at head)
+- Priority Queue (uses an array-based Binary Heap)
 
 *Linked List Operations:*
 - insert
@@ -52,12 +53,23 @@ Unit Tests to test each operation for both types
 - insert (with heapifyUp to ensure heap property)
 - insertList
 - delete (with heapifyDown to ensure heap property)
+- merge (2 heaps -> 1 heap)
+- peek (get max value)
+- copyHeap
 
-Units Tests to  test each operation and to ensure proper tracking
+*Types:*
+- Tree Structure (uses ptrs)
+- Array Structure (no ptrs needed)
+
+Units Tests to test each operation and to ensure proper tracking
 of next insert/delete location to ensure shape property
 
+*Sorting:*
+- HeapSort - uses an array-based binary heap, in-place sort, O(n log n) running time, O(n) space complexity
+
+Tested using language provided sort method to compare the result on a random.shuffle() list
+
 *TODO:*
-- Priority Queue using Binary Heap
 - Tries
 - Hash Table
 - Self-balancing BST - Red-Black Tree, Splay Tree, AVL Tree
