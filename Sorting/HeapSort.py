@@ -3,9 +3,11 @@
 #Completed: 2/25/2013
 
 # Similar to Binary_Heap_Array_Structure.py but this includes a sorting mechanic
-# O(n log n) running time to sort.
+# o(n)/O(n log n) best/worst running time to sort.
 # O(n log n) to build heap + O(n log n) to swap each max value and heapify
-# O(n) - Space Complexity
+# O(1) - auxiliary space
+# Not a stable sort
+# In-place sort
 
 import random
 
@@ -106,7 +108,7 @@ class HeapSort:
     
 if __name__ == '__main__':
     
-    a = [x for x in range(0,101)]
+    a = [x for x in range(-100,101)]
     random.shuffle(a)
     
     print("Shuffled List: %s\n"%a)
