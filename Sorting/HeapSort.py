@@ -3,7 +3,8 @@
 #Completed: 2/25/2013
 
 # Similar to Binary_Heap_Array_Structure.py but this includes a sorting mechanic
-# o(n)/O(n log n) best/worst running time to sort.
+# O(n) best case performance
+# O(n log n) AVG/worst case performance
 # O(n log n) to build heap + O(n log n) to swap each max value and heapify
 # O(1) - auxiliary space
 # Not a stable sort
@@ -107,6 +108,22 @@ class HeapSort:
         return len(self.nodes)==0
     
 if __name__ == '__main__':
+    
+    empty = []
+    emptyHeap = HeapSort(empty)
+    print("Empty Result: %s\n"%(emptyHeap.getSorted()))
+    
+    one = [1]
+    oneHeap = HeapSort(one)
+    print("One Element Result: %s\n"%(oneHeap.getSorted()))
+    
+    two = [2,1]
+    twoHeap = HeapSort(two)
+    print("Two Element Result: %s\n"%(twoHeap.getSorted()))
+    
+    three = [2,3,1]
+    threeHeap = HeapSort(three)
+    print("Three Element Result: %s\n"%(threeHeap.getSorted()))
     
     a = [x for x in range(-100,101)]
     random.shuffle(a)

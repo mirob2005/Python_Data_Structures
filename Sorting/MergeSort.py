@@ -2,7 +2,7 @@
 #mirob2005@gmail.com
 #Completed: 2/26/2013
 
-# O(n log n) best/worst running time to sort.
+# O(n log n) best/AVG/worst running time to sort.
 # O(n) auxiliary space
 # Stable sort, preserve order of equal elements
 # Not in-place
