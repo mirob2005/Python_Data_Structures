@@ -65,13 +65,15 @@ Units Tests to test each operation and to ensure proper tracking
 of next insert/delete location to ensure shape property
 
 ## *Sorting:*
-Selection Sorts:
+### Selection Sorts:
 - HeapSort - uses an array-based binary heap, in-place sort, not stable,
     O(n) best case, O(n log n) AVG/worst case performance, O(1) auxiliary space
-Merge Sorts:
+
+### Merge Sorts:
 - MergeSort - not in place, stable sort, O(n log n) best/AVG/worst case performance,
     O(n) auxiliary space
-Exchange Sorts:
+
+### Exchange Sorts:
 - QuickSort - not in place, not stable, O(n log n) best/AVG, O(n^2) worst case
     performance, O(n) auxiliary space, fastest on average
 
