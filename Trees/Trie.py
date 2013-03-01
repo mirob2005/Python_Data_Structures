@@ -78,9 +78,19 @@ class Trie:
         return self.add(key[1:],value,root.next[-1])
     
     def remove(self, key):
-        if not isMember(key, self.root):
+        if not self.isMember(key, self.root):
             return False
-        return True
+        return self.removeHelper(key, self.root)
+    
+    def removeHelper(self,key,root):
+        for node in root.next:
+            if key[0] in node.key:
+                if len(key) ==1 or len(node.next) == 1:
+                    del root.next[root.next.index(node)]
+                    return True
+                else:
+                    return self.removeHelper(key[1:],node)
+        return False
     
     def isMember(self, key, root=None):
         if not type(key) == str or not key:
@@ -131,7 +141,8 @@ if __name__ == '__main__':
     t.add('add',3)
     t.add('apple',4)
     t.add('at',5)
-    #t.add('ate',6)
+    t.add('ate',6)
     
-    print(t.traverseWords())
+    print(t)
+    #print(t.traverseWords())
     

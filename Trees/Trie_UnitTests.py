@@ -41,10 +41,69 @@ class TestBST(unittest.TestCase):
         self.assertFalse(result)
         
         print('\ntestIsMember PASSED')
+        
+    def testCommonPrefix(self):
+        self.t.add('at',5)
+        words = self.t.traverseWords()
+        self.assertEqual(words,'bob apple at')
+        result = self.t.getValue('at')
+        self.assertEqual(result, 5)
+        result = self.t.isMember('at')
+        self.assertTrue(result)
+        
+        self.t.add('ate',7)
+        result = self.t.getValue('ate')
+        self.assertEqual(result, 7)
+        result = self.t.isMember('ate')
+        self.assertTrue(result)
+        
+        result = self.t.getValue('at')
+        self.assertEqual(result, 5)
+        result = self.t.isMember('at')
+        self.assertTrue(result)
+        
+        words = self.t.traverseWords()
+        self.assertEqual(words,'bob apple at ate')
+        
+        self.t.remove('at')
+        words = self.t.traverseWords()
+        self.assertEqual(words,'bob apple ate')
+        
+        result = self.t.isMember('at')
+        self.assertFalse(result)
+        self.assertEqual(self.t.getValue('at'),None)
+        
+        result = self.t.isMember('ate')
+        self.assertTrue(result)
+        self.assertEqual(self.t.getValue('ate'),7)
+        
+        print('\ntestCommonPrefix PASSED')
     
     def testRemove(self):
-        pass
-    
+        self.t.add('add',5)
+        result = self.t.isMember('add')
+        self.assertTrue(result)
+        
+        result = self.t.traverseWords()
+        self.assertEqual(result, 'bob apple add')
+        
+        boolResult = self.t.remove('apple')
+        self.assertTrue(boolResult)
+        result = self.t.traverseWords()
+        self.assertEqual(result, 'bob add')
+        
+        boolResult = self.t.remove('add')
+        self.assertTrue(boolResult)
+        result = self.t.traverseWords()
+        self.assertEqual(result, 'bob')
+        
+        boolResult = self.t.remove('bob')
+        self.assertTrue(boolResult)
+        result = self.t.traverseWords()
+        self.assertEqual(result, 'Empty')
+        
+        print('\ntestRemove PASSED')
+        
     def testUpdateValue(self):
         result = self.t.updateValue('bob',10)
         self.assertTrue(result)
