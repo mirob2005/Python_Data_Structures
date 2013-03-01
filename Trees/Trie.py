@@ -1,4 +1,5 @@
 from ADTs.Queue_head import Queue
+from ADTs.Stack import Stack
 
 class Node:
     def __init__(self,key,value):
@@ -11,13 +12,32 @@ class Trie:
         self.root = Node(None,None)
 
     def __str__(self):
-        string = str(self.traverseBFS())
-        string += "\n"
-        string +=str(self.traverseDFSpreorder(self.root))
+        string = "BFS: %s"%str(self.traverseBFS())
+        string += "\nWords: %s"%str(self.traverseWords())
+        string += "\nDFSpreorder: %s"%str(self.traverseDFSpreorder())
         return string
     
     def __contains__(self, key):
         pass
+    
+    def traverseWords(self):
+        string = ''
+        if not self.root.next:
+            string = 'Empty'
+        for node in self.root.next:
+            for child in node.next:
+                string += str(node.key)
+                string += self.traverseKey(child)
+                string += ' '
+        string = string.strip(' ')
+        return string
+
+    def traverseKey(self,root):
+        string = str(root.key)
+        if root.next:
+            for node in root.next:
+                string += self.traverseKey(node)
+        return string
     
     def traverseDFSpreorder(self, root = True):
         if(root == True):
@@ -36,11 +56,12 @@ class Trie:
         bfsQ.enQueue(self.root)
         cur = bfsQ.deQueue()
         while cur:
-            keys.append([cur.key,cur.value])
+            if(cur != self.root):
+                keys.append(cur.key)
             for node in cur.next:
                 bfsQ.enQueue(node)
             cur = bfsQ.deQueue()
-        return keys
+        return ', '.join([str(key) for key in keys])
     
     def add(self, key, value, root=None):
         if not type(key) == str:
@@ -57,16 +78,49 @@ class Trie:
         return self.add(key[1:],value,root.next[-1])
     
     def remove(self, key):
-        pass
+        if not isMember(key, self.root):
+            return False
+        return True
     
-    def isMember(self, key):
-        pass
+    def isMember(self, key, root=None):
+        if not type(key) == str or not key:
+            return False
+        if not root:
+            root = self.root
+        for node in root.next:
+            if key[0] in node.key:
+                if len(key) == 1 and node.value:
+                    return True
+                else:
+                    return self.isMember(key[1:],root.next[root.next.index(node)])
+        return False
+
+    def updateValue(self,key,value, root=None):
+        if not type(key) == str or not key:
+            return False
+        if not root:
+            root = self.root
+        for node in root.next:
+            if key[0] in node.key:
+                if len(key) == 1:
+                    node.value = value
+                    return True
+                else:
+                    return self.updateValue(key[1:],value,root.next[root.next.index(node)])
+        return False
     
-    def updateValue(self,key):
-        pass
-    
-    def getValue(self,key):
-        pass
+    def getValue(self,key,root=None):
+        if not type(key) == str or not key:
+            return None
+        if not root:
+            root = self.root
+        for node in root.next:
+            if key[0] in node.key:
+                if len(key) == 1 and node.value:
+                    return node.value
+                else:
+                    return self.getValue(key[1:],root.next[root.next.index(node)])
+        return None
     
 if __name__ == '__main__':
     
@@ -77,21 +131,7 @@ if __name__ == '__main__':
     t.add('add',3)
     t.add('apple',4)
     t.add('at',5)
+    #t.add('ate',6)
     
-    print(t)
-    
-    #a = Node('b',None)
-    #b = Node('o',None)
-    #c = Node('b',1)
-    #
-    #a.next.append(b)
-    #b.next.append(c)
-    #
-    #for node in a.next:
-    #    if 'o' in node.key:
-    #        print(True)
-    #    else:
-    #        print(False)
-    
-    
+    print(t.traverseWords())
     
