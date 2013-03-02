@@ -10,6 +10,7 @@ class Node:
 class Trie:
     def __init__(self):
         self.root = Node(None,None)
+        self.output = ''
 
     def __str__(self):
         string = "BFS: %s"%str(self.traverseBFS())
@@ -20,24 +21,48 @@ class Trie:
     def __contains__(self, key):
         pass
     
+    #def traverseWords(self):
+    #    string = ''
+    #    if not self.root.next:
+    #        string = 'Empty'
+    #    for node in self.root.next:
+    #        for child in node.next:
+    #            string += str(node.key)
+    #            string += self.traverseKey(child)
+    #            string += ' '
+    #    string = string.strip(' ')
+    #    return string
+    #
+    #def traverseKey(self,root):
+    #    string = str(root.key)
+    #    if root.next:
+    #        for node in root.next:
+    #            string += self.traverseKey(node)
+    #    return string
+    
     def traverseWords(self):
-        string = ''
+        self.output = ''
         if not self.root.next:
-            string = 'Empty'
-        for node in self.root.next:
-            for child in node.next:
-                string += str(node.key)
-                string += self.traverseKey(child)
-                string += ' '
-        string = string.strip(' ')
-        return string
-
-    def traverseKey(self,root):
-        string = str(root.key)
-        if root.next:
-            for node in root.next:
-                string += self.traverseKey(node)
-        return string
+            self.output = 'Empty'
+        for child in self.root.next:
+            #print("<%s> WORDS:"%child.key)
+            self.traverse(child,'')
+        return self.output.strip(' ')
+        
+    def traverse(self,root,prefix):
+        #print("[%s]"%prefix)
+        prefix += root.key
+        for node in root.next:
+            if node.next and not node.value:
+                self.traverse(node,prefix)
+            elif node.next and node.value:
+                #print(prefix+node.key)
+                self.output += prefix + node.key + ' '
+                self.traverse(node,prefix)
+            else:
+                #prefix += node.key
+                #print(prefix+node.key)
+                self.output += prefix + node.key + ' '
     
     def traverseDFSpreorder(self, root = True):
         if(root == True):
@@ -137,12 +162,20 @@ if __name__ == '__main__':
     t = Trie()
     
     t.add('bob',1)
+    
     t.add('bad',2)
+    t.add('ba',5)
+    t.add('bat',3)
+    t.add('banner',4)
+    t.add('banno',4)
     t.add('add',3)
     t.add('apple',4)
     t.add('at',5)
     t.add('ate',6)
     
-    print(t)
-    #print(t.traverseWords())
+    #print(t.isMember('ba'))
+    #print(t.isMember('bad'))
+    
+    #print(t)
+    print(t.traverseWords())
     
