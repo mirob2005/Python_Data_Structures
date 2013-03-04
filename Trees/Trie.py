@@ -1,3 +1,14 @@
+#Michael Robertson
+#mirob2005@gmail.com
+#Completed: 3/3/2013
+
+#Trie is built using a Tree-like structure
+#Each node contains a single character and possibly a value
+#Each word can be created by going from the root down any branch to a
+#   terminating node or a node with a value(for prefixes)
+#The traverseWords method goes through each branch and strings together
+#   the words added to the trie by using the logic above.  
+
 from ADTs.Queue_head import Queue
 from ADTs.Stack import Stack
 
@@ -15,66 +26,31 @@ class Trie:
     def __str__(self):
         string = "BFS: %s"%str(self.traverseBFS())
         string += "\nWords: %s"%str(self.traverseWords())
-        string += "\nDFSpreorder: %s"%str(self.traverseDFSpreorder())
         return string
     
     def __contains__(self, key):
         pass
-    
-    #def traverseWords(self):
-    #    string = ''
-    #    if not self.root.next:
-    #        string = 'Empty'
-    #    for node in self.root.next:
-    #        for child in node.next:
-    #            string += str(node.key)
-    #            string += self.traverseKey(child)
-    #            string += ' '
-    #    string = string.strip(' ')
-    #    return string
-    #
-    #def traverseKey(self,root):
-    #    string = str(root.key)
-    #    if root.next:
-    #        for node in root.next:
-    #            string += self.traverseKey(node)
-    #    return string
+
     
     def traverseWords(self):
         self.output = ''
         if not self.root.next:
             self.output = 'Empty'
         for child in self.root.next:
-            #print("<%s> WORDS:"%child.key)
             self.traverse(child,'')
-        return self.output.strip(' ')
+        return self.output.rstrip(', ')
         
     def traverse(self,root,prefix):
-        #print("[%s]"%prefix)
         prefix += root.key
         for node in root.next:
             if node.next and not node.value:
                 self.traverse(node,prefix)
             elif node.next and node.value:
-                #print(prefix+node.key)
-                self.output += prefix + node.key + ' '
+                self.output += prefix + node.key + ' '# + (" (%s), "%node.value)
                 self.traverse(node,prefix)
             else:
-                #prefix += node.key
-                #print(prefix+node.key)
-                self.output += prefix + node.key + ' '
-    
-    def traverseDFSpreorder(self, root = True):
-        if(root == True):
-            root = self.root
-        #root, left subtree, right subtree
-        if(not root):
-            return []
-        if root == self.root:
-            return [self.traverseDFSpreorder(node) for node in root.next]
-        else:
-            return [root.key, root.value] + [self.traverseDFSpreorder(node) for node in root.next]
-            
+                self.output += prefix + node.key + ' '# + (" (%s), "%node.value)
+
     def traverseBFS(self):
         keys = []
         bfsQ = Queue()
@@ -88,6 +64,7 @@ class Trie:
             cur = bfsQ.deQueue()
         return ', '.join([str(key) for key in keys])
     
+    #IF key already exists, it just updates the value
     def add(self, key, value, root=None):
         if not type(key) == str:
             return False
@@ -105,16 +82,29 @@ class Trie:
     def remove(self, key):
         if not self.isMember(key, self.root):
             return False
-        return self.removeHelper(key, self.root)
+        return self.removeHelper(key, self.root,0)
     
-    def removeHelper(self,key,root):
+    def removeHelper(self,key,root,index):
         for node in root.next:
-            if key[0] in node.key:
-                if len(key) ==1 or len(node.next) == 1:
+            if key[index] in node.key:
+                #No next neighbors and value is set
+                #Delete the element completely and recurse back and test previous index
+                if not node.next and node.value != None:
                     del root.next[root.next.index(node)]
+                    self.removeHelper(key,root,index-1)
+                #Last element in key with a next neighbor and the value is set
+                #Clear the value and DONE
+                elif index == len(key)-1 and node.next and node.value != None:
+                    node.value = None
                     return True
                 else:
-                    return self.removeHelper(key[1:],node)
+                    #Not the last key and there is a next neighbor, recurse further
+                    self.removeHelper(key,node,index+1)
+                    #This runs after the last element is deleted, and proccesses
+                    #earlier nodes to check if they also need deleted
+                    if not node.next and node.value == None:
+                        del root.next[root.next.index(node)]
+                    return True
         return False
     
     def isMember(self, key, root=None):
@@ -173,9 +163,13 @@ if __name__ == '__main__':
     t.add('at',5)
     t.add('ate',6)
     
-    #print(t.isMember('ba'))
-    #print(t.isMember('bad'))
+    print(t)
+    deleteMe = 'ate'
+    t.remove(deleteMe)
+    print("\nAfter delete '%s':\n%s"%(deleteMe, t))
     
-    #print(t)
-    print(t.traverseWords())
+    print()
     
+    print("ADDED?%s"%t.add('bob',2))
+    
+    print(t)

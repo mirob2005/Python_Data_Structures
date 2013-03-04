@@ -1,6 +1,6 @@
 #Michael Robertson
 #mirob2005@gmail.com
-#Completed: 2/19/2013
+#Completed: 3/3/2013
 
 from Trie import Trie
 import unittest
@@ -76,6 +76,27 @@ class TestBST(unittest.TestCase):
         result = self.t.isMember('ate')
         self.assertTrue(result)
         self.assertEqual(self.t.getValue('ate'),7)
+        
+        self.t.add('at',6)
+        result = self.t.getValue('at')
+        self.assertEqual(result, 6)
+        result = self.t.isMember('at')
+        self.assertTrue(result)
+        
+        words = self.t.traverseWords()
+        self.assertEqual(words,'bob apple at ate')
+        
+        self.t.remove('ate')
+        words = self.t.traverseWords()
+        self.assertEqual(words,'bob apple at')
+        
+        result = self.t.isMember('at')
+        self.assertTrue(result)
+        self.assertEqual(self.t.getValue('at'),6)
+        
+        result = self.t.isMember('ate')
+        self.assertFalse(result)
+        self.assertEqual(self.t.getValue('ate'),None)
         
         print('\ntestCommonPrefix PASSED')
     
