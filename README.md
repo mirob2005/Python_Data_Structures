@@ -64,6 +64,22 @@ Unit Tests to test each operation for both types
 Units Tests to test each operation and to ensure proper tracking
 of next insert/delete location to ensure shape property
 
+## *Trie Operations:*
+- traverse(Words|Prefixes) - Outputs words for generic type or all prefixes for prefix count versions
+- traverseBFS
+- add
+- remove
+- isMember (full words or prefixes specifically added)
+- updateValue (Generic type only)
+- getValue
+
+### *Types:*
+- Generic - allows adding words with a corresponding value, all prefix node values are None
+- Prefix Count - user only adds words, values correspond to number of times that prefix is used
+- Prefix Count Speed - Same as above, but using more space to allow for faster indexing
+
+Unit tests to test each operation for all 3 types
+
 ## *Sorting:*
 ### Selection Sorts:
 - HeapSort - uses an array-based binary heap, in-place sort, not stable,
@@ -80,7 +96,6 @@ of next insert/delete location to ensure shape property
 Tested using language provided sort method to compare the result on a random.shuffle() list
 
 ## *TODO:*
-- Tries
 - Hash Table
 - Self-balancing BST - Red-Black Tree, Splay Tree, AVL Tree
 - Graphs (various types), impl. objects/ptrs, adjacency L/M, incidence L/M
