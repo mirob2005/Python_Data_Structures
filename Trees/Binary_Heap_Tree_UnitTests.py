@@ -5,7 +5,7 @@
 from Binary_Heap_Tree_Structure import BinaryHeap
 import unittest
 
-class TestBST(unittest.TestCase):
+class TestBinaryHeapTree(unittest.TestCase):
     
     def setUp(self):
         self.empty = BinaryHeap()

@@ -5,7 +5,7 @@
 from Trie_Prefix_Count_Speed import Trie
 import unittest
 
-class TestBST(unittest.TestCase):
+class TestPrefixTrie(unittest.TestCase):
     
     def setUp(self):
         self.empty = Trie()

@@ -5,7 +5,7 @@
 from Trie import Trie
 import unittest
 
-class TestBST(unittest.TestCase):
+class TestTrie(unittest.TestCase):
     
     def setUp(self):
         self.empty = Trie()

@@ -1,3 +1,7 @@
+#Michael Robertson
+#mirob2005@gmail.com
+#Completed: 3/5/2013
+
 import time
 from Trie_Prefix_Count import Trie as Trie_space
 from Trie_Prefix_Count_Speed import Trie as Trie_speed
