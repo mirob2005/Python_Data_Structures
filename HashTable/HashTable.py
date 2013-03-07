@@ -53,14 +53,14 @@ class HashTable:
         if not index:
             return False
         if self.buckets[index] == None:
-            print("Key Not Found!")
+            #print("Key Not Found!")
             return False
         else:
             for entry in self.buckets[index]:
                 if entry.key == key:
                     entry.value = value
                     return True
-            print("Key Not Found!")
+            #print("Key Not Found!")
             return False
     
     def delete(self,key):
@@ -68,14 +68,14 @@ class HashTable:
         if not index:
             return False
         if self.buckets[index] == None:
-            print("Key Not Found!")
+            #print("Key Not Found!")
             return False
         else:
             for entry in self.buckets[index]:
                 if entry.key == key:
                     self.buckets[index].remove(entry)
                     return True
-            print("Key Not Found!")
+            #print("Key Not Found!")
             return False
     
     def lookUp(self,key):
@@ -83,13 +83,13 @@ class HashTable:
         if not index:
             return False
         if self.buckets[index] == None:
-            print("Key Not Found!")
+            #print("Key Not Found!")
             return False
         else:
             for entry in self.buckets[index]:
                 if entry.key == key:
                     return entry.value
-            print("Key Not Found!")
+            #print("Key Not Found!")
             return False
         
     def printDistribution(self):
