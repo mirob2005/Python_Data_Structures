@@ -1,5 +1,8 @@
 Python Data Structures
 ======================
+### Lorem_ipsum.txt included for testing and timing purposes.
+### Currently used to test Tries and Hash Table
+
 ## *ADTS:*
 - Queue with head and tail ptr, insert new at head, remove old at tail
 - Queue with only head ptr, remove old at head, append new to the end
@@ -95,7 +98,17 @@ Unit tests to test each operation for all 3 types
 
 Tested using language provided sort method to compare the result on a random.shuffle() list
 
+## *Hash Table Operations:*
+- add
+- updateValue
+- delete
+- lookUp
+- hash
+
+### *Types:*
+- Separate Chaining Collision resolution
+Unit tests to test each operation
+
 ## *TODO:*
-- Hash Table
 - Self-balancing BST - Red-Black Tree, Splay Tree, AVL Tree
 - Graphs (various types), impl. objects/ptrs, adjacency L/M, incidence L/M

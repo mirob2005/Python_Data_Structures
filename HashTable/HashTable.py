@@ -21,6 +21,9 @@
 
 #Results in a unique hashing value for any key
 
+#Collision are dealt using separate chaining.  Each bucket contains a list of
+#   entries with that index.
+
 
 class Entry:
     def __init__(self,key, value):
