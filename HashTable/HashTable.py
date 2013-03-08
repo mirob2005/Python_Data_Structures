@@ -1,6 +1,26 @@
 #Michael Robertson
 #mirob2005@gmail.com
-#Completed: 3/5/2013
+#Completed: 3/7/2013
+
+#Hash Table is built using a list of buckets, initialized to None
+#When an entry is added to a given bucket, the bucket stores the entries in a list
+#The bucket used is decided using the defined 'hash' method which returns an index
+#   based off a hashing value modulo number of buckets in the hash table defined at
+#   object initialization.
+#The hashing value is calculated as follows:
+#   ord(character)-32*95^placement
+#   ord returns the decimal value of the ASCII character
+#The printable ASCII chars are decimal 32 to 126, by subtracting 32 we get: 0 to 94
+#Example: key  = 'test'
+#ord('t')-32 = 84 *95 ^0 = 84
+#ord('e')-32 = 69 *95 ^1 = 6555
+#ord('s')-32 = 83 *95 ^2 = 749075
+#ord('t')-32 = 84 *95 ^3 = 72019500
+#Hashing Value = 72019500 + 749075 + 6555 + 84 = 72775214
+#Index = Hashing Value % numBuckets
+
+#Results in a unique hashing value for any key
+
 
 class Entry:
     def __init__(self,key, value):
@@ -19,7 +39,14 @@ class HashTable:
         for bucket in self.buckets:
             if bucket != None:
                 for entry in bucket:
-                    string += ("%s: %s, "%(entry.key, entry.value))
+                    if type(entry.key) ==str:
+                        string += ("'%s': "%entry.key)
+                    else:
+                        string += ("%s: "%entry.key)
+                    if type(entry.value) ==str:
+                        string += ("'%s', "%entry.value)
+                    else:
+                        string += ("%s, "%entry.value)
         return string.rstrip(', ') + "}"
     
     def hash(self,key):
@@ -50,7 +77,7 @@ class HashTable:
     
     def updateValue(self,key,value):
         index = self.hash(str(key))
-        if not index:
+        if index == None:
             return False
         if self.buckets[index] == None:
             #print("Key Not Found!")
@@ -65,7 +92,7 @@ class HashTable:
     
     def delete(self,key):
         index = self.hash(str(key))
-        if not index:
+        if index == None:
             return False
         if self.buckets[index] == None:
             #print("Key Not Found!")
@@ -80,7 +107,7 @@ class HashTable:
     
     def lookUp(self,key):
         index = self.hash(str(key))
-        if not index:
+        if index == None:
             return False
         if self.buckets[index] == None:
             #print("Key Not Found!")
@@ -126,10 +153,11 @@ if __name__ == '__main__':
     
     ht.add('bob',2)
     ht.add(11,3)
+    ht.add('11',4)
     
     ht.add(' ',5)
     print(ht)
     
-    #print()
-    
+    print()
+    print(ht.lookUp(11))
     #print(ht.printDistribution())
