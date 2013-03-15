@@ -1,99 +1,145 @@
 #Michael Robertson
 #mirob2005@gmail.com
-#Completed: 3/13/2013
+#Completed: 3/14/2013
 
-# Implements a Splay Tree that uses a queue for BFS traversal,
-#   and recursion for DFS traversals. Alternates between replacing a deleted
-#   node with the inorder predecessor and inorder successor to help
-#   balancing.  Inherits BFS, insertList, __str__, print methods, and Node
-#   class from iterative BST approach since recursion is not needed for these.
+# Implements a Splay Tree that uses a method called splay that rotates the tree
+#   so that the most recently accessed node is on the top of the tree but
+#   maintains the requirements of a BST.
+# Improves the worst case search, insert, delete of a BST from O(n) to O(log n)
+#   amortized.
+# Inherits insertList, __str__, print methods, and Node
+#   class indirectly from BST_iterative and the DFS traversals and find min/max
+#   from BST_recursive
 
-from BST_iterative import BST as BST_iter
-from BST_iterative import Node
+from BST_recursive import Node
+from BST_recursive import BST
+from ADTs.Queue_head import Queue
         
-class SplayTree(BST_iter):
+class SplayTree(BST):
     def splay(self, node):
+        parent = node.parent
+        print()
+        print("node = %s"%node.key)
         if node == self.root:
             print("node is root")
             return
-        elif node.parent == self.root:
-            print('ZIG for %s'%node.key)
-            if node.key < self.root.key:
-                print('<')
-                self.root.left = node.right
-                node.right = self.root
-            else:#node.key > self.root.key
-                print('>')
-                self.root.right = node.left
-                node.left = self.root
-            self.root = node
-            node.parent = None
-            if self.root.left:
-                self.root.left.parent = self.root
-            if self.root.right:
-                self.root.right.parent = self.root
-            print('ROOT = %s'%self.root.key)
-            print('PARENT = %s'%self.root.parent.key if self.root.parent else None)
-            print('LEFT = %s'%self.root.left.key if self.root.left else None)
-            print('RIGHT = %s'%self.root.right.key if self.root.right else None)
-            print()
-            if self.root.left:
-                print("LEFT PARENT = %s"%self.root.left.parent.key if self.root.left.parent else None)
-                print("LEFT LEFT = %s"%self.root.left.left.key if self.root.left.left else None)
-                print("LEFT Right = %s"%self.root.left.right.key if self.root.left.right else None)
-            if self.root.right:
-                print("RIGHT PARENT = %s"%self.root.right.parent.key if self.root.right.parent else None)
-                print("RIGHT LEFT = %s"%self.root.right.left.key if self.root.right.left else None)
-                print("RIGHT Right = %s"%self.root.right.right.key if self.root.right.right else None)
-            print('____________________')
-        else:
-            #Parent is not the root
-            #Zig-Zig Operation
-            #print("Parent = %s"% node.parent.key)
-            #print("Parent's Parent = %s"% node.parent.parent.key if node.parent.parent else None)
-            if (node.key < node.parent.key and node.parent.key < node.parent.parent.key) or \
-                (node.key > node.parent.key and node.parent.key > node.parent.parent.key):
-                print('ZIGZIG for %s'%node.key)
-                self.splay(node.parent)
-                self.splay(node)
-            #Zig-Zag Operation
+        #Node does NOT have a grandparent - ZIG
+        elif parent == self.root:
+            print('ZIG')
+            if node.key > parent.key:
+                print('node > parent')
+                self.root = node
+                parent.right = node.left
+                node.left = parent
+                node.parent = None
+                parent.parent = node
+                if parent.right != None:
+                    parent.right.parent = parent
+                return
             else:
-                print('ZIGZAG for %s'%node.key)
-                parent = node.parent
-                gparent = node.parent.parent
-                print("Parent = %s"% parent.key)
-                print("Parent's Parent = %s"% gparent.key if gparent else None)
+                print('node < parent')
+                self.root = node
+                parent.left = node.right
+                node.right = parent
+                node.parent = None
+                parent.parent = node
+                if parent.left != None:
+                    parent.left.parent = parent
+                return
+        #Node DOES have a grandparent
+        else:
+            print('node has gp')
+            gparent = parent.parent
+            if(node.key < parent.key and parent.key < gparent.key):
+                print('ZIG-ZIG')
+                print('BOTH LEFT')
+                if gparent ==self.root:
+                    self.root = node
+                    node.parent = None
+                else:
+                    if gparent.key < gparent.parent.key:
+                        gparent.parent.left = node
+                    else:
+                        gparent.parent.right = node
+                    node.parent = gparent.parent
+                parent.left = node.right
+                if parent.left != None:
+                    parent.left.parent = parent
+                node.right = parent
+                parent.parent = node
+                gparent.left = parent.right
+                if gparent.left != None:
+                    gparent.left.parent = gparent
+                parent.right = gparent
+                
+                gparent.parent = parent
+            elif(node.key > parent.key and parent.key > parent.parent.key):
+                print('ZIG-ZIG')
+                print('BOTH RIGHT')
+                if gparent ==self.root:
+                    self.root = node
+                    node.parent = None
+                else:
+                    if gparent.key < gparent.parent.key:
+                        gparent.parent.left = node
+                    else:
+                        gparent.parent.right = node
+                    node.parent = gparent.parent
+                parent.right = node.left
+                if parent.right != None:
+                    parent.right.parent = parent
+                node.left = parent
+                parent.parent = node
+                gparent.right = parent.left
+                if gparent.right != None:
+                    gparent.right.parent = gparent
+                parent.left = gparent
+                
+                gparent.parent = parent
+            else:
+                print('ZIG-ZAG')
+                if gparent == self.root:
+                    self.root = node
+                    node.parent = None
+                else:
+                    if gparent.key < gparent.parent.key:
+                        gparent.parent.left= node
+                    else:
+                        gparent.parent.right = node
+                    node.parent = gparent.parent
                 if parent.key < gparent.key:
                     print('parent < gparent')
-                    gparent.left = node
                     parent.right = node.left
-                    node.parent = gparent
+                    if parent.right != None:
+                        parent.right.parent = parent
                     node.left = parent
                     parent.parent = node
-                    print('Gparent = %s'%gparent.key)
-                    print('GparentL = %s'%gparent.left.key)
+                    gparent.left = node.right
+                    if gparent.left != None:
+                        gparent.left.parent = gparent
+                    node.right = gparent
                     
-                else:
+                    gparent.parent = node
+                else:#parent > gparent
                     print('parent > gparent')
-                    gparent.right = node
+                    gparent.right = node.left
+                    if gparent.right != None:
+                        gparent.right.parent = gparent
+                    node.left = gparent
+                    gparent.parent = node
                     parent.left = node.right
-                    node.parent = gparent
+                    if parent.left != None:
+                        parent.left.parent = parent
                     node.right = parent
-                    parent.parent = node
-                    #print('Root is %s'%self.root.key)
-                    print('Gparent = %s'%gparent.key)
-                    print('GparentR = %s'%gparent.right.key)
-                    print('GparentL = %s'%gparent.left.key if gparent.left else None)
-                    print()
-                    print('GparentRP = %s'%gparent.right.parent.key)
-                    print('GparentRR = %s'%gparent.right.right.key)
-                    print('GparentRL = %s'%gparent.right.left.key if gparent.right.left else None)
                     
-                    print('GparentRRP = %s'%gparent.right.right.parent.key if gparent.right.right.parent else None)
-                    print('GparentRRL = %s'%gparent.right.right.left.key if gparent.right.right.left else None)
-                    print('GparentRRR = %s'%gparent.right.right.right.key if gparent.right.right.right else None)
+                    parent.parent = node
+            if self.root != node:
+                print('node is not root')
+                print('node = %s'%node.key)
                 self.splay(node)
-            print('____________________')
+                return
+            else:
+                print('node is root')
                 
     def insert(self, key, root=None):
         if(not self.root):
@@ -124,6 +170,7 @@ class SplayTree(BST_iter):
                 return False
             root = self.root
         if(key == root.key):
+            self.splay(root)
             return True
         elif(key > root.key):
             if(not root.right):
@@ -226,50 +273,22 @@ class SplayTree(BST_iter):
                 return self.delete(key,root.left)
         return False
     
-    def traverseDFSpreorder(self, root = True):
-        # Enables inheritance from BST_iterative (assumes root if none provided)
-        if(root == True):
-            root = self.root
-        #root, left subtree, right subtree
-        if(not root):
-            return []
-        return [root.key] + self.traverseDFSpreorder(root.left) + self.traverseDFSpreorder(root.right)
-    
-    def traverseDFSinorder(self, root = True):
-        # Enables inheritance from BST_iterative (assumes root if none provided)
-        if(root == True):
-            root = self.root
-        #left, root, right subtree
-        if(not root):
-            return []
-        return self.traverseDFSinorder(root.left) + [root.key] + self.traverseDFSinorder(root.right)
-    
-    def traverseDFSpostorder(self, root = True):
-        # Enables inheritance from BST_iterative (assumes root if none provided)
-        if(root == True):
-            root = self.root
-        #left, right, root
-        if(not root):
-            return []
-        return self.traverseDFSpostorder(root.left) + self.traverseDFSpostorder(root.right) + [root.key]
-    
-    def findMin(self, root=None):
-        if(not root):
-            if(not self.root):
-                return None
-            root = self.root
-        if(root.left):
-            return self.findMin(root.left)
-        return root.key
-    
-    def findMax(self, root=None):
-        if(not root):
-            if(not self.root):
-                return None
-            root = self.root
-        if(root.right):
-            return self.findMax(root.right)
-        return root.key
+    def traverseBFS(self):
+        string = ''
+        bfsQ = Queue()
+        bfsQ.enQueue(self.root)
+        cur = bfsQ.deQueue()
+        while cur:
+            string += ('\n(P%s)<-'%cur.parent.key if cur.parent else '(PNone)<-')
+            string += str(cur.key)
+            string += ('->(L%s'%cur.left.key if cur.left else '->(LNone')
+            string += ('R%s)\n'%cur.right.key if cur.right else 'RNone)\n')
+            if(cur.left):
+                bfsQ.enQueue(cur.left)
+            if(cur.right):
+                bfsQ.enQueue(cur.right)
+            cur = bfsQ.deQueue()
+        return string
     
     def findRecentAccessed(self):
         return self.root.key
@@ -277,9 +296,11 @@ class SplayTree(BST_iter):
 if __name__ == '__main__':
     st = SplayTree()
     
-    for value in [10,15,5,6,9,7,12]:
+    for value in [10,15,5,6,9,7,12,1,3]:
         st.insert(value)
         
+    st.find(7)
+    
     print('--------------------')
     print(st)
     #print(st.findRecentAccessed())
