@@ -1,10 +1,11 @@
 #Michael Robertson
 #mirob2005@gmail.com
-#Completed: 3/14/2013
+#Completed: 3/18/2013
 
 # Implements a Splay Tree that uses a method called splay that rotates the tree
-#   so that the most recently accessed node is on the top of the tree but
-#   maintains the requirements of a BST.
+#   so that the most recently accessed (insert/find) node is on the top of the
+#   tree but maintains the requirements of a BST. In case of a deletion, the
+#   parent of the deleted node is rotated to the root, if the parent exists.
 # Improves the worst case search, insert, delete of a BST from O(n) to O(log n)
 #   amortized.
 # Inherits insertList, __str__, print methods, and Node
@@ -18,16 +19,16 @@ from ADTs.Queue_head import Queue
 class SplayTree(BST):
     def splay(self, node):
         parent = node.parent
-        print()
-        print("node = %s"%node.key)
+        #print()
+        #print("node = %s"%node.key)
         if node == self.root:
-            print("node is root")
+            #print("node is root")
             return
         #Node does NOT have a grandparent - ZIG
         elif parent == self.root:
-            print('ZIG')
+            #print('ZIG')
             if node.key > parent.key:
-                print('node > parent')
+                #print('node > parent')
                 self.root = node
                 parent.right = node.left
                 node.left = parent
@@ -37,7 +38,7 @@ class SplayTree(BST):
                     parent.right.parent = parent
                 return
             else:
-                print('node < parent')
+                #print('node < parent')
                 self.root = node
                 parent.left = node.right
                 node.right = parent
@@ -48,11 +49,11 @@ class SplayTree(BST):
                 return
         #Node DOES have a grandparent
         else:
-            print('node has gp')
+            #print('node has gp')
             gparent = parent.parent
             if(node.key < parent.key and parent.key < gparent.key):
-                print('ZIG-ZIG')
-                print('BOTH LEFT')
+                #print('ZIG-ZIG')
+                #print('BOTH LEFT')
                 if gparent ==self.root:
                     self.root = node
                     node.parent = None
@@ -74,8 +75,8 @@ class SplayTree(BST):
                 
                 gparent.parent = parent
             elif(node.key > parent.key and parent.key > parent.parent.key):
-                print('ZIG-ZIG')
-                print('BOTH RIGHT')
+                #print('ZIG-ZIG')
+                #print('BOTH RIGHT')
                 if gparent ==self.root:
                     self.root = node
                     node.parent = None
@@ -97,7 +98,7 @@ class SplayTree(BST):
                 
                 gparent.parent = parent
             else:
-                print('ZIG-ZAG')
+                #print('ZIG-ZAG')
                 if gparent == self.root:
                     self.root = node
                     node.parent = None
@@ -108,7 +109,7 @@ class SplayTree(BST):
                         gparent.parent.right = node
                     node.parent = gparent.parent
                 if parent.key < gparent.key:
-                    print('parent < gparent')
+                    #print('parent < gparent')
                     parent.right = node.left
                     if parent.right != None:
                         parent.right.parent = parent
@@ -121,7 +122,7 @@ class SplayTree(BST):
                     
                     gparent.parent = node
                 else:#parent > gparent
-                    print('parent > gparent')
+                    #print('parent > gparent')
                     gparent.right = node.left
                     if gparent.right != None:
                         gparent.right.parent = gparent
@@ -134,12 +135,12 @@ class SplayTree(BST):
                     
                     parent.parent = node
             if self.root != node:
-                print('node is not root')
-                print('node = %s'%node.key)
+                #print('node is not root')
+                #print('node = %s'%node.key)
                 self.splay(node)
-                return
-            else:
-                print('node is root')
+                #return
+            #else:
+                #print('node is root')
                 
     def insert(self, key, root=None):
         if(not self.root):
@@ -181,6 +182,7 @@ class SplayTree(BST):
                 return False
             return self.find(key,root.left)
     
+    #Splay the parent of the deleted key to the root if parent exists
     def delete(self, key, root=None):
         #alternate between using inorder predecessor and successor
         if(not root):
@@ -197,31 +199,39 @@ class SplayTree(BST):
                     root.parent.right = None
                 else:
                     root.parent.left = None
+                parent = root.parent
                 root = None
+                self.splay(parent)
                 return True
             #If only 1 child (right)
             elif(not root.left and root.right):
                 #root node
                 if(not root.parent):
                     self.root = root.right
+                    return True
                 elif(root.parent.right == root):
                     root.parent.right = root.right
                 else:
                     root.parent.left = root.right
                 root.right.parent = root.parent
+                parent = root.parent
                 root = None
+                self.splay(parent)
                 return True
             #If only 1 child (left)
             elif(root.left and not root.right):
                 #root node
                 if(not root.parent):
                     self.root = root.left
+                    return True
                 if(root.parent.right == root):
                     root.parent.right = root.left
                 else:
                     root.parent.left = root.left
                 root.left.parent = root.parent
-                root = None                    
+                parent = root.parent
+                root = None
+                self.splay(parent)
                 return True
             #If 2 children
             else:
@@ -264,6 +274,8 @@ class SplayTree(BST):
                             childptr.parent.left = None
                     childptr = None
                 self.replaceWithSuccessor = not self.replaceWithSuccessor
+                if(root.parent):
+                    self.splay(root.parent)
                 return True
         elif(key > root.key):
             if(root.right):
