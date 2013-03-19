@@ -291,19 +291,27 @@ class SplayTree(BST):
         bfsQ.enQueue(self.root)
         cur = bfsQ.deQueue()
         while cur:
-            string += ('\n(P%s)<-'%cur.parent.key if cur.parent else '(PNone)<-')
+            string += ('(%s)<-'%cur.parent.key if cur.parent else '(None)<-')
             string += str(cur.key)
-            string += ('->(L%s'%cur.left.key if cur.left else '->(LNone')
-            string += ('R%s)\n'%cur.right.key if cur.right else 'RNone)\n')
+            string += ('->(%s,'%cur.left.key if cur.left else '->(None,')
+            string += ('%s)\n'%cur.right.key if cur.right else 'None)\n')
             if(cur.left):
                 bfsQ.enQueue(cur.left)
             if(cur.right):
                 bfsQ.enQueue(cur.right)
             cur = bfsQ.deQueue()
+        if string == '':
+            string = '(Empty)'
         return string
     
     def findRecentAccessed(self):
-        return self.root.key
+        if self.root:
+            return self.root.key
+        else:
+            return None
+        
+    def copyTree(self):
+        pass
     
 if __name__ == '__main__':
     st = SplayTree()
@@ -314,5 +322,5 @@ if __name__ == '__main__':
     st.find(7)
     
     print('--------------------')
-    print(st)
+    print(st.traverseBFS())
     #print(st.findRecentAccessed())
