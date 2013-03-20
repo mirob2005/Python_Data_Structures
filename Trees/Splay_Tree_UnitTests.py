@@ -1,6 +1,6 @@
 #Michael Robertson
 #mirob2005@gmail.com
-#Completed: 3/13/2013
+#Completed: 3/19/2013
 
 from Splay_Tree import SplayTree
 import unittest
@@ -220,9 +220,79 @@ class TestSplay(unittest.TestCase):
         self.assertEqual(self.st.findMax(),10)
         print("\ntestFindMax PASSED")
         
-    #def testDeleteLeaf(self):
-    #    print("\ntestDeleteLeaf PASSED")
-    #    
+    def testDeleteLeaf(self):
+        boolResult = True
+        for value in [1,5,3,7,2,9,8,10,6,4]:
+            boolResult = boolResult and self.st.insert(value)
+        self.assertTrue(boolResult)
+        string = '(None)<-4->(3,5)\n(4)<-3->(2,None)\n(4)<-5->(None,6)\n'\
+        '(3)<-2->(1,None)\n(5)<-6->(None,9)\n(2)<-1->(None,None)\n'\
+        '(6)<-9->(7,10)\n(9)<-7->(None,8)\n(9)<-10->(None,None)\n'\
+        '(7)<-8->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        self.assertTrue(self.st.delete(8))
+        string = '(None)<-7->(5,9)\n(7)<-5->(4,6)\n(7)<-9->(None,10)\n'\
+        '(5)<-4->(3,None)\n(5)<-6->(None,None)\n(9)<-10->(None,None)\n'\
+        '(4)<-3->(2,None)\n(3)<-2->(1,None)\n(2)<-1->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        self.assertTrue(self.st.delete(1))
+        string = '(None)<-2->(None,5)\n(2)<-5->(3,7)\n(5)<-3->(None,4)\n'\
+        '(5)<-7->(6,9)\n(3)<-4->(None,None)\n(7)<-6->(None,None)\n'\
+        '(7)<-9->(None,10)\n(9)<-10->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        self.assertTrue(self.st.delete(6))
+        string = '(None)<-7->(5,9)\n(7)<-5->(2,None)\n(7)<-9->(None,10)\n'\
+        '(5)<-2->(None,3)\n(9)<-10->(None,None)\n'\
+        '(2)<-3->(None,4)\n(3)<-4->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        self.assertTrue(self.st.delete(4))
+        string = '(None)<-3->(2,7)\n(3)<-2->(None,None)\n(3)<-7->(5,9)\n'\
+        '(7)<-5->(None,None)\n(7)<-9->(None,10)\n'\
+        '(9)<-10->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        self.assertTrue(self.st.delete(5))
+        string = '(None)<-7->(3,9)\n(7)<-3->(2,None)\n(7)<-9->(None,10)\n'\
+        '(3)<-2->(None,None)\n(9)<-10->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        self.assertTrue(self.st.delete(10))
+        string = '(None)<-9->(7,None)\n(9)<-7->(3,None)\n'\
+        '(7)<-3->(2,None)\n(3)<-2->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        self.assertFalse(self.st.delete(10))
+        string = '(None)<-9->(7,None)\n(9)<-7->(3,None)\n'\
+        '(7)<-3->(2,None)\n(3)<-2->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        self.assertTrue(self.st.delete(2))
+        string = '(None)<-3->(None,7)\n(3)<-7->(None,9)\n'\
+        '(7)<-9->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        self.assertTrue(self.st.delete(9))
+        string = '(None)<-7->(3,None)\n(7)<-3->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        self.assertTrue(self.st.delete(3))
+        string = '(None)<-7->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        self.assertTrue(self.st.delete(7))
+        string = '(Empty)'
+        self.assertEqual(self.st.traverseBFS(),string)
+
+        self.assertFalse(self.st.delete(7))
+        string = '(Empty)'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        print("\ntestDeleteLeaf PASSED")
+        
     def testDeleteFail(self):
         self.assertFalse(self.st.delete(1))
         boolResult = True
@@ -235,17 +305,170 @@ class TestSplay(unittest.TestCase):
         '(7)<-8->(None,None)\n'
         self.assertEqual(self.st.traverseBFS(),string)
         
+        #Check tree is resplayed even with a delete failure
         self.assertFalse(self.st.delete(0))
+        string = '(None)<-1->(None,4)\n(1)<-4->(2,5)\n(4)<-2->(None,3)\n'\
+        '(4)<-5->(None,6)\n(2)<-3->(None,None)\n(5)<-6->(None,9)\n'\
+        '(6)<-9->(7,10)\n(9)<-7->(None,8)\n(9)<-10->(None,None)\n'\
+        '(7)<-8->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
         self.assertTrue(self.st.delete(1))
+        string = '(None)<-4->(2,5)\n(4)<-2->(None,3)\n'\
+        '(4)<-5->(None,6)\n(2)<-3->(None,None)\n(5)<-6->(None,9)\n'\
+        '(6)<-9->(7,10)\n(9)<-7->(None,8)\n(9)<-10->(None,None)\n'\
+        '(7)<-8->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        #Check tree is resplayed even with a delete failure
         self.assertFalse(self.st.delete(1))
+        string = '(None)<-2->(None,4)\n(2)<-4->(3,5)\n'\
+        '(4)<-3->(None,None)\n(4)<-5->(None,6)\n(5)<-6->(None,9)\n'\
+        '(6)<-9->(7,10)\n(9)<-7->(None,8)\n(9)<-10->(None,None)\n'\
+        '(7)<-8->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
         
         print("\ntestDeleteFail PASSED")
-    #
-    #def testDeleteInternal(self):
-    #    print("\ntestDeleteInternal PASSED")
-    #    
-    #def testDeleteRoot(self):
-    #    print("\ntestDeleteRoot PASSED")
+    
+    def testDeleteInternal(self):
+        boolResult = True
+        for value in [1,5,3,7,2,9,8,10,6,4]:
+            boolResult = boolResult and self.st.insert(value)
+        self.assertTrue(boolResult)
+        string = '(None)<-4->(3,5)\n(4)<-3->(2,None)\n(4)<-5->(None,6)\n'\
+        '(3)<-2->(1,None)\n(5)<-6->(None,9)\n(2)<-1->(None,None)\n'\
+        '(6)<-9->(7,10)\n(9)<-7->(None,8)\n(9)<-10->(None,None)\n'\
+        '(7)<-8->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        self.assertTrue(self.st.delete(7))
+        string = '(None)<-9->(4,10)\n(9)<-4->(3,6)\n(9)<-10->(None,None)\n'\
+        '(4)<-3->(2,None)\n(4)<-6->(5,8)\n(3)<-2->(1,None)\n'\
+        '(6)<-5->(None,None)\n(6)<-8->(None,None)\n(2)<-1->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        self.assertTrue(self.st.delete(4))
+        string = '(None)<-3->(2,9)\n(3)<-2->(1,None)\n(3)<-9->(6,10)\n'\
+        '(2)<-1->(None,None)\n(9)<-6->(5,8)\n(9)<-10->(None,None)\n'\
+        '(6)<-5->(None,None)\n(6)<-8->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        #Differed from animation at http://techunix.technion.ac.il/~itai/,
+        #   but this should be a valid answer
+        self.assertTrue(self.st.delete(2))
+        string = '(None)<-3->(1,9)\n(3)<-1->(None,None)\n(3)<-9->(6,10)\n'\
+        '(9)<-6->(5,8)\n(9)<-10->(None,None)\n'\
+        '(6)<-5->(None,None)\n(6)<-8->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        self.assertTrue(self.st.delete(9))
+        string = '(None)<-6->(3,8)\n(6)<-3->(1,5)\n(6)<-8->(None,10)\n'\
+        '(3)<-1->(None,None)\n(3)<-5->(None,None)\n'\
+        '(8)<-10->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        self.assertTrue(self.st.delete(8))
+        string = '(None)<-6->(3,10)\n(6)<-3->(1,5)\n(6)<-10->(None,None)\n'\
+        '(3)<-1->(None,None)\n(3)<-5->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        self.assertTrue(self.st.delete(3))
+        string = '(None)<-1->(None,6)\n(1)<-6->(5,10)\n(6)<-5->(None,None)\n'\
+        '(6)<-10->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        self.assertTrue(self.st.delete(6))
+        string = '(None)<-5->(1,10)\n(5)<-1->(None,None)\n'\
+        '(5)<-10->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        self.assertTrue(self.st.delete(5))
+        string = '(None)<-1->(None,10)\n(1)<-10->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        self.assertTrue(self.st.delete(1))
+        string = '(None)<-10->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        self.assertTrue(self.st.delete(10))
+        string = '(Empty)'
+        self.assertEqual(self.st.traverseBFS(),string)
+
+        self.assertFalse(self.st.delete(10))
+        string = '(Empty)'
+        self.assertEqual(self.st.traverseBFS(),string)
+
+        print("\ntestDeleteInternal PASSED")
+        
+    def testDeleteRoot(self):
+        boolResult = True
+        for value in [1,5,3,7,2,9,8,10,6,4]:
+            boolResult = boolResult and self.st.insert(value)
+        self.assertTrue(boolResult)
+        string = '(None)<-4->(3,5)\n(4)<-3->(2,None)\n(4)<-5->(None,6)\n'\
+        '(3)<-2->(1,None)\n(5)<-6->(None,9)\n(2)<-1->(None,None)\n'\
+        '(6)<-9->(7,10)\n(9)<-7->(None,8)\n(9)<-10->(None,None)\n'\
+        '(7)<-8->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        self.assertTrue(self.st.delete(4))
+        string = '(None)<-3->(2,5)\n(3)<-2->(1,None)\n(3)<-5->(None,6)\n'\
+        '(2)<-1->(None,None)\n(5)<-6->(None,9)\n'\
+        '(6)<-9->(7,10)\n(9)<-7->(None,8)\n(9)<-10->(None,None)\n'\
+        '(7)<-8->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        self.assertTrue(self.st.delete(3))
+        string = '(None)<-2->(1,5)\n(2)<-1->(None,None)\n'\
+        '(2)<-5->(None,6)\n(5)<-6->(None,9)\n'\
+        '(6)<-9->(7,10)\n(9)<-7->(None,8)\n(9)<-10->(None,None)\n'\
+        '(7)<-8->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        self.assertTrue(self.st.delete(2))
+        string = '(None)<-1->(None,5)\n'\
+        '(1)<-5->(None,6)\n(5)<-6->(None,9)\n'\
+        '(6)<-9->(7,10)\n(9)<-7->(None,8)\n(9)<-10->(None,None)\n'\
+        '(7)<-8->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        self.assertTrue(self.st.delete(1))
+        string = '(None)<-5->(None,6)\n(5)<-6->(None,9)\n'\
+        '(6)<-9->(7,10)\n(9)<-7->(None,8)\n(9)<-10->(None,None)\n'\
+        '(7)<-8->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        self.assertTrue(self.st.delete(5))
+        string = '(None)<-6->(None,9)\n'\
+        '(6)<-9->(7,10)\n(9)<-7->(None,8)\n(9)<-10->(None,None)\n'\
+        '(7)<-8->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        self.assertTrue(self.st.delete(6))
+        string = '(None)<-9->(7,10)\n(9)<-7->(None,8)\n(9)<-10->(None,None)\n'\
+        '(7)<-8->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        self.assertTrue(self.st.delete(9))
+        string = '(None)<-7->(None,8)\n(7)<-8->(None,10)\n(8)<-10->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        self.assertTrue(self.st.delete(7))
+        string = '(None)<-8->(None,10)\n(8)<-10->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+
+        self.assertTrue(self.st.delete(8))
+        string = '(None)<-10->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+
+        self.assertTrue(self.st.delete(10))
+        string = '(Empty)'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        self.assertFalse(self.st.delete(10))
+        string = '(Empty)'
+        self.assertEqual(self.st.traverseBFS(),string)   
+        print("\ntestDeleteRoot PASSED")
 
     def testListSort(self):
         listToSort = [x for x in range(0,101,1)]

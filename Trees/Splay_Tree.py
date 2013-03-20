@@ -1,6 +1,6 @@
 #Michael Robertson
 #mirob2005@gmail.com
-#Completed: 3/18/2013
+#Completed: 3/19/2013
 
 # Implements a Splay Tree that uses a method called splay that rotates the tree
 #   so that the most recently accessed (insert/find) node is on the top of the
@@ -11,6 +11,8 @@
 # Inherits insertList, __str__, print methods, and Node
 #   class indirectly from BST_iterative and the DFS traversals and find min/max
 #   from BST_recursive
+# Delete replaces the deleted node with the inorder predecessor ONLY rather than
+#   alternate between predecessor and successor like the BST approaches
 
 from BST_recursive import Node
 from BST_recursive import BST
@@ -195,6 +197,7 @@ class SplayTree(BST):
                 #root node
                 if(not root.parent):
                     self.root = None
+                    return True
                 elif(root.parent.right == root):
                     root.parent.right = None
                 else:
@@ -208,6 +211,7 @@ class SplayTree(BST):
                 #root node
                 if(not root.parent):
                     self.root = root.right
+                    self.root.parent = None
                     return True
                 elif(root.parent.right == root):
                     root.parent.right = root.right
@@ -223,6 +227,7 @@ class SplayTree(BST):
                 #root node
                 if(not root.parent):
                     self.root = root.left
+                    self.root.parent = None
                     return True
                 if(root.parent.right == root):
                     root.parent.right = root.left
@@ -235,47 +240,30 @@ class SplayTree(BST):
                 return True
             #If 2 children
             else:
-                if(self.replaceWithSuccessor):
-                    #Greatest Right Child (inorder successor)
-                    childptr = root.right
-                    while childptr.left:
-                        childptr = childptr.left
-                    root.key = childptr.key
-                    #if replacement node has a right child
-                    if(childptr.right):
-                        if(childptr.parent.right == childptr):
-                            childptr.parent.right = childptr.right
-                        else:
-                            childptr.parent.left = childptr.right
-                        childptr.right.parent = childptr.parent
+                #Greatest Left Child (inorder predecessor)
+                childptr = root.left
+                while childptr.right:
+                    childptr = childptr.right
+                root.key = childptr.key
+                #if replacement node has a left child
+                if(childptr.left):
+                    if(childptr.parent.right == childptr):
+                        childptr.parent.right = childptr.left
                     else:
-                        if(childptr.parent.right == childptr):
-                            childptr.parent.right = None
-                        else:
-                            childptr.parent.left = None
-                    childptr = None
+                        childptr.parent.left = childptr.left
+                    childptr.left.parent = childptr.parent
                 else:
-                    #Greatest Left Child (inorder predecessor)
-                    childptr = root.left
-                    while childptr.right:
-                        childptr = childptr.right
-                    root.key = childptr.key
-                    #if replacement node has a left child
-                    if(childptr.left):
-                        if(childptr.parent.right == childptr):
-                            childptr.parent.right = childptr.left
-                        else:
-                            childptr.parent.left = childptr.left
-                        childptr.left.parent = childptr.parent
+                    if(childptr.parent.right == childptr):
+                        childptr.parent.right = None
                     else:
-                        if(childptr.parent.right == childptr):
-                            childptr.parent.right = None
-                        else:
-                            childptr.parent.left = None
-                    childptr = None
-                self.replaceWithSuccessor = not self.replaceWithSuccessor
-                if(root.parent):
-                    self.splay(root.parent)
+                        childptr.parent.left = None
+                childParent = childptr.parent
+                childptr = None
+                if(childParent):
+                    self.splay(childParent)
+                #root node
+                else:
+                    self.root.parent = None
                 return True
         elif(key > root.key):
             if(root.right):
@@ -283,6 +271,8 @@ class SplayTree(BST):
         else:
             if(root.left):
                 return self.delete(key,root.left)
+        #Tree is splayed using the last checked root even on a delete failure
+        self.splay(root)
         return False
     
     def traverseBFS(self):
@@ -311,7 +301,16 @@ class SplayTree(BST):
             return None
         
     def copyTree(self):
-        pass
+        copy = SplayTree()
+        
+        if self.root:
+            copy.root = Node(self.root.key, None, None, None)
+        if self.root.left:
+            copy.root.left = Node(self.root.left.key,None,None,copy.root)
+        if self.root.right:
+            copy.root.right = Node(self.root.right.key,None,None,copy.root)
+        
+        return copy
     
 if __name__ == '__main__':
     st = SplayTree()
@@ -322,5 +321,8 @@ if __name__ == '__main__':
     st.find(7)
     
     print('--------------------')
+    copy = st.copyTree()
     print(st.traverseBFS())
+    print('^^^^^^^^^^^^')
+    print(copy.traverseBFS())
     #print(st.findRecentAccessed())
