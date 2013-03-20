@@ -13,6 +13,12 @@
 #   from BST_recursive
 # Delete replaces the deleted node with the inorder predecessor ONLY rather than
 #   alternate between predecessor and successor like the BST approaches
+# A failed delete/find (i.e. value not found) still splays the tree using the last valid
+#   node found. If our values range [1-10] and we try to delete/find value 0, we use
+#   splay(1). Likewise, if we try to find/delete 11, we splay(10)
+# CopyTree is redefined from the BST approaches due to the fact that the splay tree
+#   structure depends on the order of the inserts unlike BST's. So copying the tree via
+#   insert will not work.
 
 from BST_recursive import Node
 from BST_recursive import BST
@@ -144,6 +150,7 @@ class SplayTree(BST):
             #else:
                 #print('node is root')
                 
+    #Splay the inserted node to the top
     def insert(self, key, root=None):
         if(not self.root):
             self.root = Node(key,None,None,None)
@@ -167,6 +174,7 @@ class SplayTree(BST):
             newRoot = root.left
         return self.insert(key, newRoot)
     
+    #Splay the found node to the top, or if not found, the last valid node to the top
     def find(self, key, root=None):
         if(not root):
             if(not self.root):
@@ -177,10 +185,12 @@ class SplayTree(BST):
             return True
         elif(key > root.key):
             if(not root.right):
+                self.splay(root)
                 return False
             return self.find(key,root.right)
         else:
             if(not root.left):
+                self.splay(root)
                 return False
             return self.find(key,root.left)
     
@@ -300,17 +310,23 @@ class SplayTree(BST):
         else:
             return None
         
+    #Must be redefined from the BST approach, because the tree will be structured
+    #   different depending on the order of insert unlike a common BST
     def copyTree(self):
         copy = SplayTree()
-        
-        if self.root:
-            copy.root = Node(self.root.key, None, None, None)
-        if self.root.left:
-            copy.root.left = Node(self.root.left.key,None,None,copy.root)
-        if self.root.right:
-            copy.root.right = Node(self.root.right.key,None,None,copy.root)
-        
+        cur = self.root
+        if cur:
+            copy.root = Node(cur.key, None, None, None)
+            self.copy(cur, copy.root)
         return copy
+    
+    def copy(self, cur, copyCur):
+        if cur.left:
+            copyCur.left = Node(cur.left.key,None,None,copyCur)
+            self.copy(cur.left,copyCur.left)
+        if cur.right:
+            copyCur.right = Node(cur.right.key,None,None,copyCur)
+            self.copy(cur.right,copyCur.right)
     
 if __name__ == '__main__':
     st = SplayTree()
@@ -322,7 +338,11 @@ if __name__ == '__main__':
     
     print('--------------------')
     copy = st.copyTree()
+    st.find(5)
+    copy.find(10)
+    print("Modified Original:\n")
     print(st.traverseBFS())
     print('^^^^^^^^^^^^')
+    print("Modified Copy:\n")
     print(copy.traverseBFS())
-    #print(st.findRecentAccessed())
+    print(st.findRecentAccessed())

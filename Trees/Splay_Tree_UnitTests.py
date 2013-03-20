@@ -77,7 +77,7 @@ class TestSplay(unittest.TestCase):
         
         print('\ntextInsert PASSED')
         
-    def testDFSinorder(self):
+    def testDFSorder(self):
         boolResult = True
         for value in [1,5,3,7,2,9,8,10,6,4]:
             boolResult = boolResult and self.st.insert(value)
@@ -110,9 +110,6 @@ class TestSplay(unittest.TestCase):
         '(7)<-8->(None,None)\n'
         self.assertEqual(self.st.traverseBFS(),string)
         
-        self.assertFalse(self.st.find(0))
-        self.assertEqual(self.st.traverseBFS(),string)
-        
         #Same result as duplicate insert
         self.assertTrue(self.st.find(7))
         string = '(None)<-7->(5,9)\n(7)<-5->(4,6)\n(7)<-9->(8,10)\n'\
@@ -124,6 +121,15 @@ class TestSplay(unittest.TestCase):
         self.assertTrue(self.st.find(4))
         string = '(None)<-4->(3,5)\n(4)<-3->(2,None)\n(4)<-5->(None,7)\n'\
         '(3)<-2->(1,None)\n(5)<-7->(6,9)\n(2)<-1->(None,None)\n'\
+        '(7)<-6->(None,None)\n(7)<-9->(8,10)\n(9)<-8->(None,None)\n'\
+        '(9)<-10->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),string)
+        
+        #Failed find still splays the tree using the last valid node found
+        # I.E. splay(1) for a failed find(0)
+        self.assertFalse(self.st.find(0))
+        string = '(None)<-1->(None,4)\n(1)<-4->(2,5)\n(4)<-2->(None,3)\n'\
+        '(4)<-5->(None,7)\n(2)<-3->(None,None)\n(5)<-7->(6,9)\n'\
         '(7)<-6->(None,None)\n(7)<-9->(8,10)\n(9)<-8->(None,None)\n'\
         '(9)<-10->(None,None)\n'
         self.assertEqual(self.st.traverseBFS(),string)
@@ -151,9 +157,43 @@ class TestSplay(unittest.TestCase):
         
         print("\ntestDuplicateInsert PASSED")
         
-    #def testCopy(self):
-    #    print("\ntestCopy PASSED")
-    #
+    def testCopy(self):
+        boolResult = True
+        for value in [1,5,3,7,2,9,8,10,6,4]:
+            boolResult = boolResult and self.st.insert(value)
+        self.assertTrue(boolResult)
+        origString = '(None)<-4->(3,5)\n(4)<-3->(2,None)\n(4)<-5->(None,6)\n'\
+        '(3)<-2->(1,None)\n(5)<-6->(None,9)\n(2)<-1->(None,None)\n'\
+        '(6)<-9->(7,10)\n(9)<-7->(None,8)\n(9)<-10->(None,None)\n'\
+        '(7)<-8->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),origString)
+        
+        #Make Copy
+        copy = self.st.copyTree()
+        
+        #Modify Original
+        self.assertTrue(self.st.delete(8))
+        newString = '(None)<-7->(5,9)\n(7)<-5->(4,6)\n(7)<-9->(None,10)\n'\
+        '(5)<-4->(3,None)\n(5)<-6->(None,None)\n(9)<-10->(None,None)\n'\
+        '(4)<-3->(2,None)\n(3)<-2->(1,None)\n(2)<-1->(None,None)\n'
+        self.assertEqual(self.st.traverseBFS(),newString)
+
+        #Ensure copy was NOT changed
+        self.assertEqual(copy.traverseBFS(),origString)
+        
+        #Modify Copy
+        self.assertTrue(copy.find(7))
+        copyString = '(None)<-7->(5,9)\n(7)<-5->(4,6)\n(7)<-9->(8,10)\n'\
+        '(5)<-4->(3,None)\n(5)<-6->(None,None)\n(9)<-8->(None,None)\n'\
+        '(9)<-10->(None,None)\n(4)<-3->(2,None)\n(3)<-2->(1,None)\n'\
+        '(2)<-1->(None,None)\n'
+        self.assertEqual(copy.traverseBFS(),copyString)
+        
+        #Ensure original was NOT changed
+        self.assertEqual(self.st.traverseBFS(),newString)
+        
+        print("\ntestCopy PASSED")
+    
     
     def testFindMin(self):
         boolResult = True
@@ -164,26 +204,30 @@ class TestSplay(unittest.TestCase):
         '(3)<-2->(1,None)\n(5)<-6->(None,9)\n(2)<-1->(None,None)\n'\
         '(6)<-9->(7,10)\n(9)<-7->(None,8)\n(9)<-10->(None,None)\n'\
         '(7)<-8->(None,None)\n'
-        self.assertEqual(self.st.findMin(),1)
-        
-        self.assertFalse(self.st.find(0))
         self.assertEqual(self.st.traverseBFS(),string)
+        
+        #Check FindMin
         self.assertEqual(self.st.findMin(),1)
         
+        #Modify Tree
         self.assertTrue(self.st.find(7))
         string = '(None)<-7->(5,9)\n(7)<-5->(4,6)\n(7)<-9->(8,10)\n'\
         '(5)<-4->(3,None)\n(5)<-6->(None,None)\n(9)<-8->(None,None)\n'\
         '(9)<-10->(None,None)\n(4)<-3->(2,None)\n(3)<-2->(1,None)\n'\
         '(2)<-1->(None,None)\n'
         self.assertEqual(self.st.traverseBFS(),string)
+        #Check FindMin Again
         self.assertEqual(self.st.findMin(),1)
         
-        self.assertTrue(self.st.find(4))
-        string = '(None)<-4->(3,5)\n(4)<-3->(2,None)\n(4)<-5->(None,7)\n'\
-        '(3)<-2->(1,None)\n(5)<-7->(6,9)\n(2)<-1->(None,None)\n'\
-        '(7)<-6->(None,None)\n(7)<-9->(8,10)\n(9)<-8->(None,None)\n'\
-        '(9)<-10->(None,None)\n'
+        #Modify Tree with a failed find
+        self.assertFalse(self.st.find(0))
+        string = '(None)<-1->(None,7)\n(1)<-7->(4,9)\n(7)<-4->(2,5)\n'\
+        '(7)<-9->(8,10)\n(4)<-2->(None,3)\n(4)<-5->(None,6)\n'\
+        '(9)<-8->(None,None)\n(9)<-10->(None,None)\n(2)<-3->(None,None)\n'\
+        '(5)<-6->(None,None)\n'
         self.assertEqual(self.st.traverseBFS(),string)
+        
+        #Check FindMin Again
         self.assertEqual(self.st.findMin(),1)
         
         print("\ntestFindMin PASSED")
@@ -197,27 +241,33 @@ class TestSplay(unittest.TestCase):
         '(3)<-2->(1,None)\n(5)<-6->(None,9)\n(2)<-1->(None,None)\n'\
         '(6)<-9->(7,10)\n(9)<-7->(None,8)\n(9)<-10->(None,None)\n'\
         '(7)<-8->(None,None)\n'
-        self.assertEqual(self.st.findMax(),10)
-        
-        self.assertFalse(self.st.find(0))
         self.assertEqual(self.st.traverseBFS(),string)
+        
+        #Check FindMax
         self.assertEqual(self.st.findMax(),10)
         
+        #Modify Tree
         self.assertTrue(self.st.find(7))
         string = '(None)<-7->(5,9)\n(7)<-5->(4,6)\n(7)<-9->(8,10)\n'\
         '(5)<-4->(3,None)\n(5)<-6->(None,None)\n(9)<-8->(None,None)\n'\
         '(9)<-10->(None,None)\n(4)<-3->(2,None)\n(3)<-2->(1,None)\n'\
         '(2)<-1->(None,None)\n'
         self.assertEqual(self.st.traverseBFS(),string)
+        
+        #Check FindMax Again
         self.assertEqual(self.st.findMax(),10)
         
-        self.assertTrue(self.st.find(4))
-        string = '(None)<-4->(3,5)\n(4)<-3->(2,None)\n(4)<-5->(None,7)\n'\
-        '(3)<-2->(1,None)\n(5)<-7->(6,9)\n(2)<-1->(None,None)\n'\
-        '(7)<-6->(None,None)\n(7)<-9->(8,10)\n(9)<-8->(None,None)\n'\
-        '(9)<-10->(None,None)\n'
+        #Modify Tree with a failed find
+        self.assertFalse(self.st.find(0))
+        string = '(None)<-1->(None,7)\n(1)<-7->(4,9)\n(7)<-4->(2,5)\n'\
+        '(7)<-9->(8,10)\n(4)<-2->(None,3)\n(4)<-5->(None,6)\n'\
+        '(9)<-8->(None,None)\n(9)<-10->(None,None)\n(2)<-3->(None,None)\n'\
+        '(5)<-6->(None,None)\n'
         self.assertEqual(self.st.traverseBFS(),string)
+        
+        #Check FindMax Again
         self.assertEqual(self.st.findMax(),10)
+        
         print("\ntestFindMax PASSED")
         
     def testDeleteLeaf(self):
@@ -306,6 +356,7 @@ class TestSplay(unittest.TestCase):
         self.assertEqual(self.st.traverseBFS(),string)
         
         #Check tree is resplayed even with a delete failure
+        #   similar to a failed find
         self.assertFalse(self.st.delete(0))
         string = '(None)<-1->(None,4)\n(1)<-4->(2,5)\n(4)<-2->(None,3)\n'\
         '(4)<-5->(None,6)\n(2)<-3->(None,None)\n(5)<-6->(None,9)\n'\
@@ -491,6 +542,14 @@ class TestSplay(unittest.TestCase):
         
         self.assertTrue(self.st.find(7))
         self.assertEqual(self.st.findRecentAccessed(),7)
+        
+        #Failed Find
+        self.assertFalse(self.st.find(101))
+        self.assertEqual(self.st.findRecentAccessed(),100)
+        
+        #Failed Delete
+        self.assertFalse(self.st.delete(-1))
+        self.assertEqual(self.st.findRecentAccessed(),0)
         
         print("\ntestRecentAccessed PASSED")
     

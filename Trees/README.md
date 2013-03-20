@@ -52,3 +52,19 @@ of next insert/delete location to ensure shape property
 - Prefix Count Speed - Same as above, but using more space to allow for faster indexing
 
 Unit tests to test each operation for all 3 types
+
+# *Self-Balancing BST's:*
+## *Splay Tree:*
+### *Operations:*
+- insert (splaying added)
+- find (splaying added for valid/invalid finds)
+- delete (splaying added for valid/invalid deletes)
+- copyTree (redefined due to the structure of the splay tree varying based off order of inserts)
+- findRecentAccessed (returns the root, only useful for a splay tree)
+- splay (rotates the tree so that the most recent inserted/found node or parent of a recent delete is rotated to the root)
+
+- All redefined operations are recursive.
+
+### *Rest of the operations are inherited from the recursive BST*
+
+Unit Tests to test each operation and valid splaying.
