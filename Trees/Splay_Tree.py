@@ -196,7 +196,7 @@ class SplayTree(BST):
     
     #Splay the parent of the deleted key to the root if parent exists
     def delete(self, key, root=None):
-        #alternate between using inorder predecessor and successor
+        #replace using inorder predecessor
         if(not root):
             if(not self.root):
                 return False
