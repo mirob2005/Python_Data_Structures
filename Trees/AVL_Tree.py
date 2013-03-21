@@ -11,17 +11,18 @@
 
 #Rotation Rules:
 #   BF = -2 for P, P's right subtree is heavy
-#       IF BF of R(right-child) = -1 then single left rotation P root (R-R case)
+#       IF BF of R(right-child) = -1 or 0 then single left rotation P root (R-R case)
 #       IF BF of R(right-child) = +1 then 2 rotations needed:
 #           right rotation R root then left rotation P root (R-L case)
 
 #   BF = +2 for P, P's left subtree is heavy
-#       IF BF of L(left-child) = +1 then single right rotation P root (L-L case)
+#       IF BF of L(left-child) = +1 or 0 then single right rotation P root (L-L case)
 #       IF BF of L(left-child) = -1 then 2 rotations needed:
 #           left rotation L root then right rotation P root (L-R case)
 
 
 from BST_recursive import BST
+from ADTs.Queue_head import Queue
 
 class Node:
     def __init__(self,key,left,right,parent):
@@ -31,13 +32,57 @@ class Node:
         self.parent = parent
         #Balance Factor
         self.BF = 0
+        self.height = 1
         
 class AVLTree(BST):
-    def rotate(self,root):
+    def rotateLeft(self,root):
+        if root.key > root.parent.key:
+            right = True
+            left = False
+        else:
+            right = False
+            left = True
+        parent = root.parent
+        root.parent = root.right
+        root.right.left = root
+        root.right.parent = parent
+        if(right):
+            parent.right = root.right
+        else:
+            parent.left = root.right
+        root.right = None
+        root.height -= 2
+        root.BF = 0
+
+    def rotateRight(self,root):
         pass
-    
+
     def calcBF(self,root):
-        pass
+        #print('Calc for %s'%root.key)
+        if root.right and root.left:
+            root.height = max(root.right.height, root.left.height) + 1
+            root.BF = root.left.height - root.right.height
+        elif root.right and not root.left:
+            root.height = root.right.height + 1
+            root.BF = -root.right.height
+        elif not root.right and root.left:
+            root.height = root.left.height + 1
+            root.BF = root.left.height
+        if root.BF > 1:
+            #print('%s is Left Heavy'%root.key)
+            if root.left.BF >= 0:
+                print('Single Right Rotation Needed')
+            else:
+                print('2 rotations needed L-R')
+        elif root.BF < -1:
+            print('%s is Right Heavy'%root.key)
+            if root.right.BF <= 0:
+                print('Single Left Rotation Needed')
+                self.rotateLeft(root)
+            else:
+                print('2 rotations needed R-L')
+        if root.parent:
+            self.calcBF(root.parent)
     
     def insert(self, key, root=None):
         if(not self.root):
@@ -50,11 +95,13 @@ class AVLTree(BST):
         elif(key > root.key):
             if(not root.right):
                 root.right = Node(key,None,None,root)
+                self.calcBF(root.right)
                 return True
             newRoot = root.right
         else:
             if(not root.left):
                 root.left = Node(key,None,None,root)
+                self.calcBF(root.left)
                 return True
             newRoot = root.left
         return self.insert(key, newRoot)
@@ -136,10 +183,11 @@ class AVLTree(BST):
         bfsQ.enQueue(self.root)
         cur = bfsQ.deQueue()
         while cur:
-            string += ('(%s)<-'%cur.parent.key if cur.parent else '(None)<-')
-            string += str(cur.key)
-            string += ('->(%s,'%cur.left.key if cur.left else '->(None,')
-            string += ('%s)\n'%cur.right.key if cur.right else 'None)\n')
+            string += ('\n(%s)\n'%cur.parent.key if cur.parent else '\n(None)\n')
+            string += ('<%s>'%str(cur.key))
+            string += ('(Height: %s, BF: %s)'%(cur.height, cur.BF))
+            string += ('\n(%s,'%cur.left.key if cur.left else '\n(None,')
+            string += ('%s)\n____'%cur.right.key if cur.right else 'None)\n____')
             if(cur.left):
                 bfsQ.enQueue(cur.left)
             if(cur.right):
@@ -168,3 +216,8 @@ class AVLTree(BST):
 if __name__ == '__main__':
     avl = AVLTree()
     
+    for value in [10,15,5,16,17]:
+        #print('\nInserting %d'%value)
+        avl.insert(value)
+        
+    print(avl)
