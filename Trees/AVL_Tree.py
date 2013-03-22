@@ -79,6 +79,8 @@ class AVLTree(BST):
 
     def calcBF(self,root):
         #print('Calc for %s'%root.key)
+        if not root:
+            return          
         if root.right and root.left:
             root.height = max(root.right.height, root.left.height) + 1
             root.BF = root.left.height - root.right.height
@@ -156,7 +158,9 @@ class AVLTree(BST):
                     root.parent.right = None
                 else:
                     root.parent.left = None
+                parent = root.parent
                 root = None
+                self.calcBF(parent)
                 return True
             #If only 1 child (right)
             elif(not root.left and root.right):
@@ -168,7 +172,9 @@ class AVLTree(BST):
                 else:
                     root.parent.left = root.right
                 root.right.parent = root.parent
+                parent = root.parent
                 root = None
+                self.calcBF(parent)
                 return True
             #If only 1 child (left)
             elif(root.left and not root.right):
@@ -180,7 +186,9 @@ class AVLTree(BST):
                 else:
                     root.parent.left = root.left
                 root.left.parent = root.parent
-                root = None                    
+                parent = root.parent
+                root = None
+                self.calcBF(parent)
                 return True
             #If 2 children
             else:
@@ -201,7 +209,9 @@ class AVLTree(BST):
                         childptr.parent.right = None
                     else:
                         childptr.parent.left = None
+                parent = childptr.parent
                 childptr = None
+                self.calcBF(parent)
                 return True
         elif(key > root.key):
             if(root.right):
@@ -249,13 +259,13 @@ class AVLTree(BST):
             
     def deleteTree(self):
         cur = self.root
-        self.delete(cur)
+        self.deleteTreeHelper(cur)
     
-    def delete(self,cur):
+    def deleteTreeHelper(self,cur):
         if cur.left:
-            self.delete(cur.left)
+            self.deleteTreeHelper(cur.left)
         if cur.right:
-            self.delete(cur.right)
+            self.deleteTreeHelper(cur.right)
         print('Deleting %s'%cur.key)
         if cur.parent:
             if cur.key > cur.parent.key:
@@ -273,5 +283,11 @@ if __name__ == '__main__':
         avl.insert(value)
         
     print(avl)
-    avl.deleteTree()
+    avl.delete(3)
+    avl.delete(2)
+    avl.delete(5)
+    avl.delete(4)
+    avl.delete(1)
+    avl.delete(6)
     print(avl)
+    
