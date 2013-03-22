@@ -36,26 +36,46 @@ class Node:
         
 class AVLTree(BST):
     def rotateLeft(self,root):
-        if root.key > root.parent.key:
-            right = True
-            left = False
+        print('Rotating %s left'%root.key)
+        child = root.right
+        if root.parent:
+            parent = root.parent
+            if root.key > root.parent.key:
+                parent.right = child
+            else:
+                parent.left = child
+            child.parent = parent
         else:
-            right = False
-            left = True
-        parent = root.parent
-        root.parent = root.right
-        root.right.left = root
-        root.right.parent = parent
-        if(right):
-            parent.right = root.right
+            self.root = child
+            child.parent = None
+        if child.left:
+            root.right = child.left
+            child.left.parent = root
         else:
-            parent.left = root.right
-        root.right = None
-        root.height -= 2
-        root.BF = 0
+            root.right = None    
+        root.parent = child
+        child.left = root
 
     def rotateRight(self,root):
-        pass
+        print('Rotating %s right'%root.key)
+        child = root.left
+        if root.parent:
+            parent = root.parent
+            if root.key > root.parent.key:
+                parent.right = child
+            else:
+                parent.left = child
+            child.parent = parent
+        else:
+            self.root = child
+            child.parent = None
+        if child.right:
+            root.left = child.right
+            child.right.parent = root
+        else:
+            root.left = None    
+        root.parent = child
+        child.right = root
 
     def calcBF(self,root):
         #print('Calc for %s'%root.key)
@@ -68,19 +88,33 @@ class AVLTree(BST):
         elif not root.right and root.left:
             root.height = root.left.height + 1
             root.BF = root.left.height
+        else:
+            root.height = 1
+            root.BF = 0
         if root.BF > 1:
             #print('%s is Left Heavy'%root.key)
             if root.left.BF >= 0:
-                print('Single Right Rotation Needed')
+                #print('Single Right Rotation Needed')
+                pivot = root
+                self.rotateRight(root)
+                self.calcBF(pivot)
             else:
                 print('2 rotations needed L-R')
+                pivot = root.left
+                self.rotateLeft(pivot)
+                self.calcBF(pivot)
         elif root.BF < -1:
-            print('%s is Right Heavy'%root.key)
+            #print('%s is Right Heavy'%root.key)
             if root.right.BF <= 0:
-                print('Single Left Rotation Needed')
-                self.rotateLeft(root)
+                #print('Single Left Rotation Needed')
+                pivot = root
+                self.rotateLeft(pivot)
+                self.calcBF(pivot)
             else:
                 print('2 rotations needed R-L')
+                pivot = root.right
+                self.rotateRight(pivot)
+                self.calcBF(pivot)
         if root.parent:
             self.calcBF(root.parent)
     
@@ -213,11 +247,31 @@ class AVLTree(BST):
             copyCur.right = Node(cur.right.key,None,None,copyCur)
             self.copy(cur.right,copyCur.right)
             
+    def deleteTree(self):
+        cur = self.root
+        self.delete(cur)
+    
+    def delete(self,cur):
+        if cur.left:
+            self.delete(cur.left)
+        if cur.right:
+            self.delete(cur.right)
+        print('Deleting %s'%cur.key)
+        if cur.parent:
+            if cur.key > cur.parent.key:
+                cur.parent.right = None
+            else:
+                cur.parent.left = None
+        else:
+            self.root = None
+    
 if __name__ == '__main__':
     avl = AVLTree()
     
-    for value in [10,15,5,16,17]:
-        #print('\nInserting %d'%value)
+    for value in [6,5,4,3,2,1]:
+        print('\nInserting %d'%value)
         avl.insert(value)
         
+    print(avl)
+    avl.deleteTree()
     print(avl)
