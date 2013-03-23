@@ -1,6 +1,6 @@
 #Michael Robertson
 #mirob2005@gmail.com
-#Completed: 3/--/2013
+#Completed: 3/22/2013
 
 # Implements a AVL tree.
 # Uses a balance factor to determine if a tree rotation is necessary.
@@ -23,6 +23,7 @@
 
 from BST_recursive import BST
 from ADTs.Queue_head import Queue
+import random
 
 class Node:
     def __init__(self,key,left,right,parent):
@@ -36,7 +37,7 @@ class Node:
         
 class AVLTree(BST):
     def rotateLeft(self,root):
-        print('Rotating %s left'%root.key)
+        #print('Rotating %s left'%root.key)
         child = root.right
         if root.parent:
             parent = root.parent
@@ -57,7 +58,7 @@ class AVLTree(BST):
         child.left = root
 
     def rotateRight(self,root):
-        print('Rotating %s right'%root.key)
+        #print('Rotating %s right'%root.key)
         child = root.left
         if root.parent:
             parent = root.parent
@@ -100,11 +101,14 @@ class AVLTree(BST):
                 pivot = root
                 self.rotateRight(root)
                 self.calcBF(pivot)
+                return
             else:
-                print('2 rotations needed L-R')
+                #print('2 rotations needed L-R')
                 pivot = root.left
                 self.rotateLeft(pivot)
+                #self.rotateRight(root)
                 self.calcBF(pivot)
+                return
         elif root.BF < -1:
             #print('%s is Right Heavy'%root.key)
             if root.right.BF <= 0:
@@ -112,13 +116,20 @@ class AVLTree(BST):
                 pivot = root
                 self.rotateLeft(pivot)
                 self.calcBF(pivot)
+                return
             else:
-                print('2 rotations needed R-L')
+                #print('2 rotations needed R-L')
                 pivot = root.right
                 self.rotateRight(pivot)
+                #self.rotateLeft(root)
                 self.calcBF(pivot)
+                return
         if root.parent:
+            #print('UP')
+            #print('Current: %s'%root.key)
+            #print('Parent: %s'%root.parent.key)
             self.calcBF(root.parent)
+            return
     
     def insert(self, key, root=None):
         if(not self.root):
@@ -242,7 +253,7 @@ class AVLTree(BST):
         return string
     
     def copyTree(self):
-        copy = SplayTree()
+        copy = AVLTree()
         cur = self.root
         if cur:
             copy.root = Node(cur.key, None, None, None)
@@ -275,19 +286,49 @@ class AVLTree(BST):
         else:
             self.root = None
     
+    def outputTesting(self):
+        string = ''
+        bfsQ = Queue()
+        bfsQ.enQueue(self.root)
+        cur = bfsQ.deQueue()
+        while cur:
+            string += ('(%s)<-'%cur.parent.key if cur.parent else '(None)<-')
+            string += str(cur.key)
+            string += ('(H:%sBF:%s)'%(cur.height, cur.BF))
+            string += ('->(%s,'%cur.left.key if cur.left else '->(None,')
+            string += ('%s)\n'%cur.right.key if cur.right else 'None)\n')
+            if(cur.left):
+                bfsQ.enQueue(cur.left)
+            if(cur.right):
+                bfsQ.enQueue(cur.right)
+            cur = bfsQ.deQueue()
+        if string == '':
+            string = '(Empty)'
+        return string
+
+    
 if __name__ == '__main__':
     avl = AVLTree()
     
-    for value in [6,5,4,3,2,1]:
-        print('\nInserting %d'%value)
+    test = [11,8,3,10,14,2,15,12,18,4,7,9,13,17]
+    
+    listToSort = [x for x in range(0,27,1)]
+    random.shuffle(listToSort)
+    for value in listToSort:
+        print('Inserting %s'%value)
         avl.insert(value)
         
-    print(avl)
-    avl.delete(3)
-    avl.delete(2)
-    avl.delete(5)
-    avl.delete(4)
-    avl.delete(1)
-    avl.delete(6)
-    print(avl)
+    #print(avl)
+    #avl.delete(3)
+    #avl.delete(2)
+    #avl.delete(5)
+    #avl.delete(4)
+    #avl.delete(1)
+    #avl.delete(6)
+    #print(avl)
+    result = True
+    for value in listToSort:
+        result = result and avl.find(value)
     
+    print(avl.outputTesting())
+    print(result)
