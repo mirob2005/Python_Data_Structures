@@ -1,6 +1,6 @@
 #Michael Robertson
 #mirob2005@gmail.com
-#Completed: 3/22/2013
+#Completed: 3/--/2013
 
 # Implements a AVL tree.
 # Uses a balance factor to determine if a tree rotation is necessary.
@@ -33,7 +33,6 @@ class Node:
         self.parent = parent
         #Balance Factor
         self.BF = 0
-        self.height = 1
         
 class AVLTree(BST):
     def rotateLeft(self,root):
@@ -56,6 +55,10 @@ class AVLTree(BST):
             root.right = None    
         root.parent = child
         child.left = root
+        
+        #UpdateBF
+        root.BF = root.BF + 1 - min(child.BF,0)
+        child.BF = child.BF + 1 + max(root.BF,0)
 
     def rotateRight(self,root):
         #print('Rotating %s right'%root.key)
@@ -77,59 +80,63 @@ class AVLTree(BST):
             root.left = None    
         root.parent = child
         child.right = root
+        
+        #UpdateBF
+        root.BF = root.BF - 1 - max(child.BF,0)
+        child.BF = child.BF - 1 + min(root.BF,0)
 
-    def calcBF(self,root):
-        #print('Calc for %s'%root.key)
-        if not root:
-            return          
-        if root.right and root.left:
-            root.height = max(root.right.height, root.left.height) + 1
-            root.BF = root.left.height - root.right.height
-        elif root.right and not root.left:
-            root.height = root.right.height + 1
-            root.BF = -root.right.height
-        elif not root.right and root.left:
-            root.height = root.left.height + 1
-            root.BF = root.left.height
+    def calcBFAfterInsert(self,root):
+        if not root or not root.parent:
+            return
+        parent = root.parent
+        #print('Calc for %s'%parent.key)
+        if root.key < parent.key:
+            parent.BF += 1
         else:
-            root.height = 1
-            root.BF = 0
-        if root.BF > 1:
-            #print('%s is Left Heavy'%root.key)
+            parent.BF -= 1
+        self.checkBalance(parent)
+        if parent.BF == 1 or parent.BF == -1:
+            self.calcBFAfterInsert(parent)
+            
+    def calcBFAfterDelete(self,root,key):
+        #print('Root key %s, key %s'%(root.key,key))
+        if not root:
+            return
+        #print('Calc for %s'%root.key)
+        #Replaced by inorder predecessor
+        if key == None:
+            root.BF-=1
+        else:
+            if key < root.key:
+                root.BF -= 1
+            else:
+                root.BF += 1
+        self.checkBalance(root)
+        if root.parent:
+            if root.BF == 1 or root.BF == -1:
+                self.calcBFAfterDelete(root.parent)
+            
+    def checkBalance(self,root):
+        if root.BF ==0:
+            return
+        elif root.BF >1:
             if root.left.BF >= 0:
                 #print('Single Right Rotation Needed')
-                pivot = root
                 self.rotateRight(root)
-                self.calcBF(pivot)
-                return
             else:
                 #print('2 rotations needed L-R')
                 pivot = root.left
                 self.rotateLeft(pivot)
-                #self.rotateRight(root)
-                self.calcBF(pivot)
-                return
+                self.rotateRight(root)
         elif root.BF < -1:
-            #print('%s is Right Heavy'%root.key)
-            if root.right.BF <= 0:
+            if root.right.BF <=0:
                 #print('Single Left Rotation Needed')
-                pivot = root
-                self.rotateLeft(pivot)
-                self.calcBF(pivot)
-                return
+                self.rotateLeft(root)
             else:
                 #print('2 rotations needed R-L')
                 pivot = root.right
                 self.rotateRight(pivot)
-                #self.rotateLeft(root)
-                self.calcBF(pivot)
-                return
-        if root.parent:
-            #print('UP')
-            #print('Current: %s'%root.key)
-            #print('Parent: %s'%root.parent.key)
-            self.calcBF(root.parent)
-            return
+                self.rotateLeft(root)
     
     def insert(self, key, root=None):
         if(not self.root):
@@ -142,13 +149,13 @@ class AVLTree(BST):
         elif(key > root.key):
             if(not root.right):
                 root.right = Node(key,None,None,root)
-                self.calcBF(root.right)
+                self.calcBFAfterInsert(root.right)
                 return True
             newRoot = root.right
         else:
             if(not root.left):
                 root.left = Node(key,None,None,root)
-                self.calcBF(root.left)
+                self.calcBFAfterInsert(root.left)
                 return True
             newRoot = root.left
         return self.insert(key, newRoot)
@@ -171,7 +178,7 @@ class AVLTree(BST):
                     root.parent.left = None
                 parent = root.parent
                 root = None
-                self.calcBF(parent)
+                self.calcBFAfterDelete(parent,key)
                 return True
             #If only 1 child (right)
             elif(not root.left and root.right):
@@ -185,7 +192,7 @@ class AVLTree(BST):
                 root.right.parent = root.parent
                 parent = root.parent
                 root = None
-                self.calcBF(parent)
+                self.calcBFAfterDelete(parent,key)
                 return True
             #If only 1 child (left)
             elif(root.left and not root.right):
@@ -199,7 +206,7 @@ class AVLTree(BST):
                 root.left.parent = root.parent
                 parent = root.parent
                 root = None
-                self.calcBF(parent)
+                self.calcBFAfterDelete(parent,key)
                 return True
             #If 2 children
             else:
@@ -222,7 +229,7 @@ class AVLTree(BST):
                         childptr.parent.left = None
                 parent = childptr.parent
                 childptr = None
-                self.calcBF(parent)
+                self.calcBFAfterDelete(parent,None)
                 return True
         elif(key > root.key):
             if(root.right):
@@ -240,7 +247,7 @@ class AVLTree(BST):
         while cur:
             string += ('\n(%s)\n'%cur.parent.key if cur.parent else '\n(None)\n')
             string += ('<%s>'%str(cur.key))
-            string += ('(Height: %s, BF: %s)'%(cur.height, cur.BF))
+            string += ('(BF: %s)'%(cur.BF))
             string += ('\n(%s,'%cur.left.key if cur.left else '\n(None,')
             string += ('%s)\n____'%cur.right.key if cur.right else 'None)\n____')
             if(cur.left):
@@ -294,7 +301,7 @@ class AVLTree(BST):
         while cur:
             string += ('(%s)<-'%cur.parent.key if cur.parent else '(None)<-')
             string += str(cur.key)
-            string += ('(H:%sBF:%s)'%(cur.height, cur.BF))
+            string += ('(BF:%s)'%(cur.BF))
             string += ('->(%s,'%cur.left.key if cur.left else '->(None,')
             string += ('%s)\n'%cur.right.key if cur.right else 'None)\n')
             if(cur.left):
@@ -310,25 +317,18 @@ class AVLTree(BST):
 if __name__ == '__main__':
     avl = AVLTree()
     
-    test = [11,8,3,10,14,2,15,12,18,4,7,9,13,17]
-    
-    listToSort = [x for x in range(0,27,1)]
-    random.shuffle(listToSort)
+    #listToSort = [x for x in range(0,10,1)]
+    #random.shuffle(listToSort)
+    listToSort = [1,0,2,3]
     for value in listToSort:
-        print('Inserting %s'%value)
+        #print('Inserting %s'%value)
         avl.insert(value)
-        
-    #print(avl)
-    #avl.delete(3)
-    #avl.delete(2)
-    #avl.delete(5)
-    #avl.delete(4)
-    #avl.delete(1)
-    #avl.delete(6)
-    #print(avl)
+
     result = True
     for value in listToSort:
         result = result and avl.find(value)
-    
-    print(avl.outputTesting())
+    print()
     print(result)
+    print()
+    #avl.delete(2)
+    print(avl)

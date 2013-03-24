@@ -18,7 +18,7 @@ class TestAVL(unittest.TestCase):
         self.assertEqual(self.avl.findMin(),None)
         self.assertFalse(self.avl.delete(1))
         self.assertTrue(self.avl.insert(5))
-        self.assertEqual(self.avl.outputTesting(),'(None)<-5(H:1BF:0)->(None,None)\n')
+        self.assertEqual(self.avl.outputTesting(),'(None)<-5(BF:0)->(None,None)\n')
         print("\ntestEmpty PASSED")
         
     def testInsert(self):
