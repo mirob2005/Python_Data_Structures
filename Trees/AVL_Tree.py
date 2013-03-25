@@ -26,13 +26,13 @@ from ADTs.Queue_head import Queue
 import random
 
 class Node:
-    def __init__(self,key,left,right,parent):
+    def __init__(self,key,left,right,parent, BF=0):
         self.key = key
         self.left = left
         self.right = right
         self.parent = parent
         #Balance Factor
-        self.BF = 0
+        self.BF = BF
         
 class AVLTree(BST):
     def rotateLeft(self,root):
@@ -63,6 +63,13 @@ class AVLTree(BST):
     def rotateRight(self,root):
         #print('Rotating %s right'%root.key)
         child = root.left
+        #DEBUGGING
+        if child == None:
+            print('Root %s has parent %s and children %s and %s'\
+                  %(root.key,root.parent.key if root.parent else 'None',\
+                    root.left.key if root.left else 'None',\
+                    root.right.key if root.right else 'None'))
+        ###########
         if root.parent:
             parent = root.parent
             if root.key > root.parent.key:
@@ -263,16 +270,16 @@ class AVLTree(BST):
         copy = AVLTree()
         cur = self.root
         if cur:
-            copy.root = Node(cur.key, None, None, None)
+            copy.root = Node(cur.key, None, None, None,cur.BF)
             self.copy(cur, copy.root)
         return copy
     
     def copy(self, cur, copyCur):
         if cur.left:
-            copyCur.left = Node(cur.left.key,None,None,copyCur)
+            copyCur.left = Node(cur.left.key,None,None,copyCur,cur.left.BF)
             self.copy(cur.left,copyCur.left)
         if cur.right:
-            copyCur.right = Node(cur.right.key,None,None,copyCur)
+            copyCur.right = Node(cur.right.key,None,None,copyCur,cur.right.BF)
             self.copy(cur.right,copyCur.right)
             
     def deleteTree(self):
