@@ -68,3 +68,19 @@ Unit tests to test each operation for all 3 types
 ### *Rest of the operations are inherited from the recursive BST*
 
 Unit Tests to test each operation and valid splaying.
+
+## *AVL Tree:*
+### *Operations:*
+- insert (Balance Factor Calculations added)
+- delete (Balance Factor Calculations added)
+- deleteTree (new, none of the other trees has this added at this time)
+- checkBalance (check the Balance Factor to see if a rotation(s) is necessary)
+- calcBF (recalculate the BF for the the given root and all ancestors if necessary, insert version and delete version)
+- rotateLeft
+- rotateRight
+
+- All redefined operations are recursive.
+
+### *Rest of the operations are inherited from the recursive BST*
+
+Unit Tests to test each operation and valid rotations.
