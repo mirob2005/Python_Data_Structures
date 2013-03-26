@@ -1,6 +1,6 @@
 #Michael Robertson
 #mirob2005@gmail.com
-#Completed: 3/--/2013
+#Completed: 3/25/2013
 
 # Implements a AVL tree.
 # Uses a balance factor to determine if a tree rotation is necessary.
@@ -20,6 +20,13 @@
 #       IF BF of L(left-child) = -1 then 2 rotations needed:
 #           left rotation L root then right rotation P root (L-R case)
 
+#After A Rotate LEFT recalculate the BF as follows:
+#   root.BF = root.BF + 1 - min(child.BF,0)
+#   child.BF = child.BF + 1 + max(root.BF,0)
+
+#After A Rotate RIGHT recalculate the BF as follows:
+#   root.BF = root.BF - 1 - max(child.BF,0)
+#   child.BF = child.BF - 1 + min(root.BF,0)
 
 from BST_recursive import BST
 from ADTs.Queue_head import Queue
@@ -63,13 +70,6 @@ class AVLTree(BST):
     def rotateRight(self,root):
         #print('Rotating %s right'%root.key)
         child = root.left
-        #DEBUGGING
-        if child == None:
-            print('Root %s has parent %s and children %s and %s'\
-                  %(root.key,root.parent.key if root.parent else 'None',\
-                    root.left.key if root.left else 'None',\
-                    root.right.key if root.right else 'None'))
-        ###########
         if root.parent:
             parent = root.parent
             if root.key > root.parent.key:
@@ -97,36 +97,56 @@ class AVLTree(BST):
             return
         parent = root.parent
         #print('Calc for %s'%parent.key)
+        if not root.right and not root.left:
+            root.BF = 0
         if root.key < parent.key:
             parent.BF += 1
         else:
             parent.BF -= 1
+        #BUG FIX
+        if (not root.right and root.BF < 0) or\
+        (not root.left and root.BF > 0):
+            root.BF = -root.BF
         self.checkBalance(parent)
         if parent.BF == 1 or parent.BF == -1:
             self.calcBFAfterInsert(parent)
             
-    def calcBFAfterDelete(self,root,key):
-        #print('Root key %s, key %s'%(root.key,key))
+    def calcBFAfterDelete(self,root,sign):
+        #print('Root key %s, sign %s'%(root.key,sign))
         if not root:
             return
         #print('Calc for %s'%root.key)
-        #Replaced by inorder predecessor
-        if key == None:
-            root.BF-=1
+        rotation = False
+        if not root.left and not root.right:
+            root.BF = 0
         else:
-            if key < root.key:
+            if sign == -1:
                 root.BF -= 1
-            else:
+            elif sign == 1:
                 root.BF += 1
-        self.checkBalance(root)
+            rotation = self.checkBalance(root)
+        #BUG FIX
+        if (not root.right and root.BF < 0) or\
+        (not root.left and root.BF > 0):
+            root.BF = -root.BF
+        if rotation and root.parent:
+            #The rotation recalculates the BF, can skip to the parent
+            root = root.parent
         if root.parent:
-            if root.BF == 1 or root.BF == -1:
-                self.calcBFAfterDelete(root.parent)
+            #If root.BF == 0, it means that the BF was +-1,
+            #This makes this subtree shorter thus we need to propagate upwards
+            if root.BF == 0:
+                if root.key < root.parent.key:
+                    sign = -1
+                else:
+                    sign = 1
+                self.calcBFAfterDelete(root.parent,sign)
             
     def checkBalance(self,root):
-        if root.BF ==0:
-            return
-        elif root.BF >1:
+        if not root.left and not root.right:
+            root.BF = 0
+            return False
+        if root.BF >1:
             if root.left.BF >= 0:
                 #print('Single Right Rotation Needed')
                 self.rotateRight(root)
@@ -135,6 +155,7 @@ class AVLTree(BST):
                 pivot = root.left
                 self.rotateLeft(pivot)
                 self.rotateRight(root)
+            return True
         elif root.BF < -1:
             if root.right.BF <=0:
                 #print('Single Left Rotation Needed')
@@ -144,6 +165,9 @@ class AVLTree(BST):
                 pivot = root.right
                 self.rotateRight(pivot)
                 self.rotateLeft(root)
+            return True
+        else:
+            return False
     
     def insert(self, key, root=None):
         if(not self.root):
@@ -179,41 +203,51 @@ class AVLTree(BST):
                 #root node
                 if(not root.parent):
                     self.root = None
+                    #Sign is used to determine BF
+                    sign = 0
                 elif(root.parent.right == root):
+                    sign = 1
                     root.parent.right = None
                 else:
+                    sign = -1
                     root.parent.left = None
                 parent = root.parent
                 root = None
-                self.calcBFAfterDelete(parent,key)
+                self.calcBFAfterDelete(parent,sign)
                 return True
             #If only 1 child (right)
             elif(not root.left and root.right):
                 #root node
                 if(not root.parent):
                     self.root = root.right
+                    sign = 0
                 elif(root.parent.right == root):
+                    sign = 1
                     root.parent.right = root.right
                 else:
+                    sign = -1
                     root.parent.left = root.right
                 root.right.parent = root.parent
                 parent = root.parent
                 root = None
-                self.calcBFAfterDelete(parent,key)
+                self.calcBFAfterDelete(parent,sign)
                 return True
             #If only 1 child (left)
             elif(root.left and not root.right):
                 #root node
                 if(not root.parent):
+                    sign = 0
                     self.root = root.left
                 if(root.parent.right == root):
+                    sign = 1
                     root.parent.right = root.left
                 else:
+                    sign = -1
                     root.parent.left = root.left
                 root.left.parent = root.parent
                 parent = root.parent
                 root = None
-                self.calcBFAfterDelete(parent,key)
+                self.calcBFAfterDelete(parent,sign)
                 return True
             #If 2 children
             else:
@@ -226,17 +260,22 @@ class AVLTree(BST):
                 if(childptr.left):
                     if(childptr.parent.right == childptr):
                         childptr.parent.right = childptr.left
+                        #Used for calculating BF
+                        sign = 1
                     else:
                         childptr.parent.left = childptr.left
+                        sign = -1
                     childptr.left.parent = childptr.parent
                 else:
                     if(childptr.parent.right == childptr):
                         childptr.parent.right = None
+                        sign = 1
                     else:
                         childptr.parent.left = None
+                        sign = -1
                 parent = childptr.parent
                 childptr = None
-                self.calcBFAfterDelete(parent,None)
+                self.calcBFAfterDelete(parent,sign)
                 return True
         elif(key > root.key):
             if(root.right):
@@ -291,7 +330,7 @@ class AVLTree(BST):
             self.deleteTreeHelper(cur.left)
         if cur.right:
             self.deleteTreeHelper(cur.right)
-        print('Deleting %s'%cur.key)
+        #print('Deleting %s'%cur.key)
         if cur.parent:
             if cur.key > cur.parent.key:
                 cur.parent.right = None
@@ -324,9 +363,12 @@ class AVLTree(BST):
 if __name__ == '__main__':
     avl = AVLTree()
     
-    #listToSort = [x for x in range(0,10,1)]
-    #random.shuffle(listToSort)
-    listToSort = [1,0,2,3]
+    listToSort = [48, 59, 26, 99, 1, 24, 41, 87, 95, 88, 57, 58, 71, 39, 73, \
+                  62, 27, 79, 60, 68,7, 66, 65, 84, 93, 54, 49, 21, 98, 29, 11, 40, \
+                  31, 16, 38, 37, 76, 83, 77, 12, 80, 6, 85, 3, 22, 17, 97, 69, 5, \
+                  75, 47, 9, 15, 82, 53, 94, 89, 14, 30, 19, 63, 0, 20, 64, 43, 96, \
+                  46, 86, 52, 34, 42, 44, 36, 51, 72, 74, 67, 25, 70, 4, 78, 18,92, \
+                  23, 90, 2, 10, 13, 45, 56, 28, 100, 50, 91, 35, 33, 81, 61, 32, 8, 55]
     for value in listToSort:
         #print('Inserting %s'%value)
         avl.insert(value)
@@ -337,5 +379,5 @@ if __name__ == '__main__':
     print()
     print(result)
     print()
-    #avl.delete(2)
-    print(avl)
+    
+    print(avl.outputTesting())
