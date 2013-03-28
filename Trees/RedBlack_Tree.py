@@ -35,7 +35,7 @@ class Node:
         
 class RedBlackTree(BST):
     def rotateLeft(self,root):
-        print('Rotating %s left'%root.key)
+        #print('Rotating %s left'%root.key)
         child = root.right
         if root.parent:
             parent = root.parent
@@ -56,7 +56,7 @@ class RedBlackTree(BST):
         child.left = root
 
     def rotateRight(self,root):
-        print('Rotating %s right'%root.key)
+        #print('Rotating %s right'%root.key)
         child = root.left
         if root.parent:
             parent = root.parent
@@ -77,7 +77,7 @@ class RedBlackTree(BST):
         child.right = root
 
     def checkColorAfterInsert(self,root):
-        print('Checking color for key %s'%root.key)
+        #print('Checking color for key %s'%root.key)
         parent = root.parent
         if not parent:
             return
@@ -87,44 +87,45 @@ class RedBlackTree(BST):
                 #print('Parent is left child')
                 sibling = parent.parent.right
                 if sibling and sibling.color == True:
-                    print('Setting %s Black'%parent.key)
+                    #print('Setting %s Black'%parent.key)
                     parent.color = False
-                    print('Setting %s Black'%sibling.key)
+                    #print('Setting %s Black'%sibling.key)
                     sibling.color = False
-                    print('Setting %s Red'%parent.parent.key)
+                    #print('Setting %s Red'%parent.parent.key)
                     parent.parent.color = True
                     self.checkColorAfterInsert(parent.parent)
                 else:
-                    print('Rotating')
+                    #print('Rotating')
                     if root.isRightChild():
                         self.rotateLeft(parent)
-                    print('Setting %s Black'%parent.key)
+                    #print('Setting %s Black'%parent.key)
                     parent.color = False
-                    print('Setting %s RED'%parent.parent.key)
+                    #print('Setting %s RED'%parent.parent.key)
                     parent.parent.color = True
                     self.rotateRight(parent.parent)
             else:
                 #print('Parent is right child')
                 sibling = parent.parent.left
                 if sibling and sibling.color == True:
-                    print('Setting %s Black'%parent.key)
+                    #print('Setting %s Black'%parent.key)
                     parent.color = False
-                    print('Setting %s Black'%sibling.key)
+                    #print('Setting %s Black'%sibling.key)
                     sibling.color = False
-                    print('Setting %s RED'%parent.parent.key)
+                    #print('Setting %s RED'%parent.parent.key)
                     parent.parent.color = True
                     self.checkColorAfterInsert(parent.parent)
                 else:
-                    print('Rotating')
+                    #print('Rotating')
                     if root.isLeftChild():
                         self.rotateRight(parent)
-                    print('Setting %s Black'%parent.key)
+                    #print('Setting %s Black'%parent.key)
                     parent.color = False
-                    print('Setting %s RED'%parent.parent.key)
+                    #print('Setting %s RED'%parent.parent.key)
                     parent.parent.color = True
                     self.rotateLeft(parent.parent)
         if self.root.color:
-            print('Setting Root %s BLACK'%self.root.key)
+            pass
+            #print('Setting Root %s BLACK'%self.root.key)
         self.root.color = False
                 
     
@@ -151,7 +152,71 @@ class RedBlackTree(BST):
         return self.insert(key, newRoot)
     
     def checkColorAfterDelete(self,root):
-        print('Fixing color for key %s'%root.key)
+        #print('Fixing color for key %s'%root.key)
+        #print('Node Color: %s'%root.color)
+        if root != self.root and root.color == False:
+            if root.isLeftChild():
+                sibling = root.parent.right
+                if sibling.color == True:
+                    #print('Setting %s Black'%sibling.key)
+                    sibling.color = False
+                    #print('Setting %s Red'%root.parent.key)
+                    root.parent.color = True
+                    self.rotateLeft(root.parent)
+                    sibling = root.parent.right
+                if sibling.left.color == False and sibling.right.color == False:
+                    #print('Setting %s Red'%sibling.key)
+                    sibling.color = True
+                    self.checkColorAfterDelete(root.parent)
+                else:
+                    if sibling.right.color == False:
+                        #print('Setting %s Black'%sibling.left.key)
+                        sibling.left.color = False
+                        #print('Setting %s Red'%sibling.key)
+                        sibling.color = True
+                        self.rotateRight(sibling)
+                        sibling = root.parent.right
+                    #print('Setting %s %s'%(sibling.key,'Red' if root.parent.color else "Black"))
+                    sibling.color = root.parent.color
+                    #print('Setting %s Black'%root.parent.key)
+                    root.parent.color = False
+                    #print('Setting %s Black'%sibling.right.key)
+                    sibling.right.color = False
+                    self.rotateLeft(root.parent)
+                    self.checkColorAfterDelete(self.root)
+            else:#root.isRightChild()
+                sibling = root.parent.left
+                if sibling.color == True:
+                    #print('Setting %s Black'%sibling.key)
+                    sibling.color = False
+                    #print('Setting %s Red'%root.parent.key)
+                    root.parent.color = True
+                    self.rotateRight(root.parent)
+                    sibling = root.parent.left
+                if sibling.left.color == False and sibling.right.color == False:
+                    #print('Setting %s Red'%sibling.key)
+                    sibling.color = True
+                    self.checkColorAfterDelete(root.parent)
+                else:
+                    if sibling.left.color == False:
+                        #print('Setting %s Black'%sibling.right.key)
+                        sibling.right.color = False
+                        #print('Setting %s Red'%sibling.key)
+                        sibling.color = True
+                        self.rotateLeft(sibling)
+                        sibling = root.parent.left
+                    #print('Setting %s %s'%(sibling.key,'Red' if root.parent.color else "Black"))
+                    sibling.color = root.parent.color
+                    #print('Setting %s Black'%root.parent.key)
+                    root.parent.color = False
+                    #print('Setting %s Black'%sibling.left.key)
+                    sibling.left.color = False
+                    self.rotateRight(root.parent)
+                    self.checkColorAfterDelete(self.root)
+        if self.root.color:
+            pass
+            #print('Setting %s Black'%self.root.key)
+        self.root.color = False
         
     
     def delete(self, key, root=None):
@@ -215,6 +280,7 @@ class RedBlackTree(BST):
                 while childptr.right:
                     childptr = childptr.right
                 root.key = childptr.key
+                root.color = childptr.color
                 fix = True if not childptr.color else False
                 #if replacement node has a left child
                 if(childptr.left):
