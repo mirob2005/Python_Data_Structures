@@ -97,12 +97,13 @@ class RedBlackTree(BST):
                 else:
                     #print('Rotating')
                     if root.isRightChild():
-                        self.rotateLeft(parent)
+                        root = root.parent
+                        self.rotateLeft(root)
                     #print('Setting %s Black'%parent.key)
-                    parent.color = False
+                    root.parent.color = False
                     #print('Setting %s RED'%parent.parent.key)
-                    parent.parent.color = True
-                    self.rotateRight(parent.parent)
+                    root.parent.parent.color = True
+                    self.rotateRight(root.parent.parent)
             else:
                 #print('Parent is right child')
                 sibling = parent.parent.left
@@ -117,12 +118,13 @@ class RedBlackTree(BST):
                 else:
                     #print('Rotating')
                     if root.isLeftChild():
-                        self.rotateRight(parent)
+                        root = root.parent
+                        self.rotateRight(root)
                     #print('Setting %s Black'%parent.key)
-                    parent.color = False
+                    root.parent.color = False
                     #print('Setting %s RED'%parent.parent.key)
-                    parent.parent.color = True
-                    self.rotateLeft(parent.parent)
+                    root.parent.parent.color = True
+                    self.rotateLeft(root.parent.parent)
         if self.root.color:
             pass
             #print('Setting Root %s BLACK'%self.root.key)
@@ -394,9 +396,9 @@ if __name__ == '__main__':
     
 
     
-    listToInsert = [5,1,7,0,2,6,8,3,4]
+    listToInsert = [47,30,2,6,12,64,62]
     for value in listToInsert:
-        #print('Inserting %s'%value)
+        print('Inserting %s'%value)
         rb.insert(value)
     
     result = True
