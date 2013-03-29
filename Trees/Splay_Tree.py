@@ -20,6 +20,11 @@
 #   structure depends on the order of the inserts unlike BST's. So copying the tree via
 #   insert will not work.
 
+# Time Complexity:
+#       Search - avg O(log n)   worst case: amortized O(log n)
+#       Insert - avg O(log n)   worst case: amortized O(log n)
+#       Delete - avg O(log n)   worst case: amortized O(log n)
+
 from BST_recursive import Node
 from BST_recursive import BST
 from ADTs.Queue_head import Queue

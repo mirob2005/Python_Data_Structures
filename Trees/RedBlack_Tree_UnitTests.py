@@ -1,6 +1,6 @@
 #Michael Robertson
 #mirob2005@gmail.com
-#Completed: 3/--/2013
+#Completed: 3/29/2013
 
 from RedBlack_Tree import RedBlackTree
 import unittest
@@ -581,122 +581,394 @@ class TestRedBlackTree(unittest.TestCase):
         
         print("\ntestDeleteFail PASSED")
     
-    #def testDeleteInternal(self):
-    #    self.assertEqual(self.fullRB.outputTesting(),self.result)
-    #    
-    #    #No rotations necessary
-    #    self.assertTrue(self.fullRB.delete(3))
-    #    newResult = ''
-    #    self.assertEqual(self.fullRB.outputTesting(),newResult)
-    #
-    #    #No rotations necessary
-    #    self.assertTrue(self.fullRB.delete(4))
-    #    newResult = ''
-    #    self.assertEqual(self.fullRB.outputTesting(),newResult)
-    #
-    #    #Rotations Necessary
-    #    self.assertTrue(self.fullRB.delete(98))
-    #    newResult = ''
-    #    self.assertEqual(self.fullRB.outputTesting(),newResult)
-    #
-    #    #No Rotations Necessary
-    #    self.assertTrue(self.fullRB.delete(6))
-    #    newResult = ''
-    #    self.assertEqual(self.fullRB.outputTesting(),newResult)
-    #    
-    #    #Rotations Necessary
-    #    self.assertTrue(self.fullRB.delete(5))
-    #    newResult = ''
-    #    self.assertEqual(self.fullRB.outputTesting(),newResult)
-    #    
-    #    #Rotations Necessary
-    #    self.assertTrue(self.fullRB.delete(7))
-    #    newResult = ''
-    #    self.assertEqual(self.fullRB.outputTesting(),newResult)
-    #
-    #    #1 Rotation Necessary
-    #    self.assertTrue(self.fullRB.delete(2))
-    #    newResult = ''
-    #             
-    #    self.assertEqual(self.fullRB.outputTesting(),newResult)
-    #    
-    #    print("\ntestDeleteInternal PASSED")
-    #    
-    #def testDeleteRoot(self):
-    #    self.assertEqual(self.fullRB.outputTesting(),self.result)
-    #    
-    #    self.assertTrue(self.fullRB.delete(93))
-    #    newResult = ''
-    #    self.assertEqual(self.fullRB.outputTesting(),newResult)
-    #    
-    #    self.assertTrue(self.fullRB.delete(64))
-    #    newResult = ''
-    #    self.assertEqual(self.fullRB.outputTesting(),newResult)
-    #    
-    #    #Requires Rotation
-    #    self.assertTrue(self.fullRB.delete(62))
-    #    newResult = ''
-    #    self.assertEqual(self.fullRB.outputTesting(),newResult)
-    #    
-    #    self.assertTrue(self.fullRB.delete(47))
-    #    newResult = ''
-    #    self.assertEqual(self.fullRB.outputTesting(),newResult)
-    #    
-    #    #Requires Rotation
-    #    self.assertTrue(self.fullRB.delete(30))
-    #    newResult = ''
-    #    self.assertEqual(self.fullRB.outputTesting(),newResult)
-    #    
-    #    self.assertTrue(self.fullRB.delete(12))
-    #    newResult = ''
-    #    self.assertEqual(self.fullRB.outputTesting(),newResult)
-    #    
-    #    self.assertTrue(self.fullRB.delete(7))
-    #    newResult = ''
-    #    self.assertEqual(self.fullRB.outputTesting(),newResult)
-    #    
-    #    self.assertTrue(self.fullRB.delete(6))
-    #    newResult = ''
-    #    self.assertEqual(self.fullRB.outputTesting(),newResult)
-    #    
-    #    self.assertTrue(self.fullRB.delete(5))
-    #    newResult = ''
-    #    self.assertEqual(self.fullRB.outputTesting(),newResult)
-    #    
-    #    self.assertTrue(self.fullRB.delete(4))
-    #    newResult = ''
-    #    self.assertEqual(self.fullRB.outputTesting(),newResult)
-    #    
-    #    self.assertTrue(self.fullRB.delete(97))
-    #    newResult = ''
-    #    self.assertEqual(self.fullRB.outputTesting(),newResult)
-    #
-    #    self.assertTrue(self.fullRB.delete(95))
-    #    newResult = ''
-    #    self.assertEqual(self.fullRB.outputTesting(),newResult)
-    #
-    #    self.assertTrue(self.fullRB.delete(3))
-    #    newResult = ''
-    #    self.assertEqual(self.fullRB.outputTesting(),newResult)
-    #
-    #    self.assertTrue(self.fullRB.delete(98))
-    #    newResult = ''
-    #    self.assertEqual(self.fullRB.outputTesting(),newResult)
-    #
-    #    self.assertTrue(self.fullRB.delete(2))
-    #    newResult = ''
-    #    self.assertEqual(self.fullRB.outputTesting(),newResult)
-    #
-    #    self.assertTrue(self.fullRB.delete(99))
-    #    newResult = '(Empty)'
-    #    self.assertEqual(self.fullRB.outputTesting(),newResult)
-    #    
-    #    for item in range(0,101):
-    #        self.assertFalse(self.fullRB.delete(item))
-    #        self.assertFalse(self.fullRB.find(item))
-    #    self.assertEqual(self.fullRB.outputTesting(),newResult)
-    #    
-    #    print("\ntestDeleteRoot PASSED")
+    def testDeleteInternal(self):
+        self.assertEqual(self.fullRB.outputTesting(),self.result)
+        
+        #Requires a rotation and color changes
+        self.assertTrue(self.fullRB.delete(3))
+        newResult = '(NoneB)<-62B->(6B,93B)\n'\
+                 '(62B)<-6B->(4R,30R)\n'\
+                 '(62B)<-93B->(64B,97R)\n'\
+                 '(6B)<-4R->(2B,5B)\n'\
+                 '(6B)<-30R->(12B,47B)\n'\
+                 '(93B)<-64B->(NoneB,NoneB)\n'\
+                 '(93B)<-97R->(95B,98B)\n'\
+                 '(4R)<-2B->(NoneB,NoneB)\n'\
+                 '(4R)<-5B->(NoneB,NoneB)\n'\
+                 '(30R)<-12B->(7R,NoneB)\n'\
+                 '(30R)<-47B->(NoneB,NoneB)\n'\
+                 '(97R)<-95B->(NoneB,NoneB)\n'\
+                 '(97R)<-98B->(NoneB,99R)\n'\
+                 '(12B)<-7R->(NoneB,NoneB)\n'\
+                 '(98B)<-99R->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+    
+        #Requires color changes
+        self.assertTrue(self.fullRB.delete(4))
+        newResult = '(NoneB)<-62B->(6B,93B)\n'\
+                 '(62B)<-6B->(2B,30R)\n'\
+                 '(62B)<-93B->(64B,97R)\n'\
+                 '(6B)<-2B->(NoneB,5R)\n'\
+                 '(6B)<-30R->(12B,47B)\n'\
+                 '(93B)<-64B->(NoneB,NoneB)\n'\
+                 '(93B)<-97R->(95B,98B)\n'\
+                 '(2B)<-5R->(NoneB,NoneB)\n'\
+                 '(30R)<-12B->(7R,NoneB)\n'\
+                 '(30R)<-47B->(NoneB,NoneB)\n'\
+                 '(97R)<-95B->(NoneB,NoneB)\n'\
+                 '(97R)<-98B->(NoneB,99R)\n'\
+                 '(12B)<-7R->(NoneB,NoneB)\n'\
+                 '(98B)<-99R->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+    
+        #Requires a rotation and color changes
+        self.assertTrue(self.fullRB.delete(93))
+        newResult = '(NoneB)<-62B->(6B,97B)\n'\
+                 '(62B)<-6B->(2B,30R)\n'\
+                 '(62B)<-97B->(64B,98B)\n'\
+                 '(6B)<-2B->(NoneB,5R)\n'\
+                 '(6B)<-30R->(12B,47B)\n'\
+                 '(97B)<-64B->(NoneB,95R)\n'\
+                 '(97B)<-98B->(NoneB,99R)\n'\
+                 '(2B)<-5R->(NoneB,NoneB)\n'\
+                 '(30R)<-12B->(7R,NoneB)\n'\
+                 '(30R)<-47B->(NoneB,NoneB)\n'\
+                 '(64B)<-95R->(NoneB,NoneB)\n'\
+                 '(98B)<-99R->(NoneB,NoneB)\n'\
+                 '(12B)<-7R->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+    
+        #Requires 1 color change
+        self.assertTrue(self.fullRB.delete(6))
+        newResult = '(NoneB)<-62B->(5B,97B)\n'\
+                 '(62B)<-5B->(2B,30R)\n'\
+                 '(62B)<-97B->(64B,98B)\n'\
+                 '(5B)<-2B->(NoneB,NoneB)\n'\
+                 '(5B)<-30R->(12B,47B)\n'\
+                 '(97B)<-64B->(NoneB,95R)\n'\
+                 '(97B)<-98B->(NoneB,99R)\n'\
+                 '(30R)<-12B->(7R,NoneB)\n'\
+                 '(30R)<-47B->(NoneB,NoneB)\n'\
+                 '(64B)<-95R->(NoneB,NoneB)\n'\
+                 '(98B)<-99R->(NoneB,NoneB)\n'\
+                 '(12B)<-7R->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        #Requires 3 rotations and color changes
+        self.assertTrue(self.fullRB.delete(5))
+        newResult = '(NoneB)<-62B->(30B,97B)\n'\
+                 '(62B)<-30B->(7R,47B)\n'\
+                 '(62B)<-97B->(64B,98B)\n'\
+                 '(30B)<-7R->(2B,12B)\n'\
+                 '(30B)<-47B->(NoneB,NoneB)\n'\
+                 '(97B)<-64B->(NoneB,95R)\n'\
+                 '(97B)<-98B->(NoneB,99R)\n'\
+                 '(7R)<-2B->(NoneB,NoneB)\n'\
+                 '(7R)<-12B->(NoneB,NoneB)\n'\
+                 '(64B)<-95R->(NoneB,NoneB)\n'\
+                 '(98B)<-99R->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        #Requires a color change
+        self.assertTrue(self.fullRB.delete(97))
+        newResult = '(NoneB)<-62B->(30B,95B)\n'\
+                 '(62B)<-30B->(7R,47B)\n'\
+                 '(62B)<-95B->(64B,98B)\n'\
+                 '(30B)<-7R->(2B,12B)\n'\
+                 '(30B)<-47B->(NoneB,NoneB)\n'\
+                 '(95B)<-64B->(NoneB,NoneB)\n'\
+                 '(95B)<-98B->(NoneB,99R)\n'\
+                 '(7R)<-2B->(NoneB,NoneB)\n'\
+                 '(7R)<-12B->(NoneB,NoneB)\n'\
+                 '(98B)<-99R->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+    
+        #Requires a rotation and color changes
+        self.assertTrue(self.fullRB.delete(95))
+        newResult = '(NoneB)<-62B->(30B,98B)\n'\
+                 '(62B)<-30B->(7R,47B)\n'\
+                 '(62B)<-98B->(64B,99B)\n'\
+                 '(30B)<-7R->(2B,12B)\n'\
+                 '(30B)<-47B->(NoneB,NoneB)\n'\
+                 '(98B)<-64B->(NoneB,NoneB)\n'\
+                 '(98B)<-99B->(NoneB,NoneB)\n'\
+                 '(7R)<-2B->(NoneB,NoneB)\n'\
+                 '(7R)<-12B->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        #Requires a rotation and color changes
+        self.assertTrue(self.fullRB.delete(98))
+        newResult = '(NoneB)<-30B->(7B,62B)\n'\
+                 '(30B)<-7B->(2B,12B)\n'\
+                 '(30B)<-62B->(47B,64B)\n'\
+                 '(7B)<-2B->(NoneB,NoneB)\n'\
+                 '(7B)<-12B->(NoneB,NoneB)\n'\
+                 '(62B)<-47B->(NoneB,NoneB)\n'\
+                 '(62B)<-64B->(NoneB,99R)\n'\
+                 '(64B)<-99R->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        #Requires color changes
+        self.assertTrue(self.fullRB.delete(7))
+        newResult = '(NoneB)<-30B->(2B,62R)\n'\
+                 '(30B)<-2B->(NoneB,12R)\n'\
+                 '(30B)<-62R->(47B,64B)\n'\
+                 '(2B)<-12R->(NoneB,NoneB)\n'\
+                 '(62R)<-47B->(NoneB,NoneB)\n'\
+                 '(62R)<-64B->(NoneB,99R)\n'\
+                 '(64B)<-99R->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        #Requires color changes and a rotation
+        self.assertTrue(self.fullRB.delete(62))
+        newResult = '(NoneB)<-30B->(2B,64R)\n'\
+                 '(30B)<-2B->(NoneB,12R)\n'\
+                 '(30B)<-64R->(47B,99B)\n'\
+                 '(2B)<-12R->(NoneB,NoneB)\n'\
+                 '(64R)<-47B->(NoneB,NoneB)\n'\
+                 '(64R)<-99B->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        #Requires color changes
+        self.assertTrue(self.fullRB.delete(64))
+        newResult = '(NoneB)<-30B->(2B,47B)\n'\
+                 '(30B)<-2B->(NoneB,12R)\n'\
+                 '(30B)<-47B->(NoneB,99R)\n'\
+                 '(2B)<-12R->(NoneB,NoneB)\n'\
+                 '(47B)<-99R->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        #Requires a color change
+        self.assertTrue(self.fullRB.delete(47))
+        newResult = '(NoneB)<-30B->(2B,99B)\n'\
+                 '(30B)<-2B->(NoneB,12R)\n'\
+                 '(30B)<-99B->(NoneB,NoneB)\n'\
+                 '(2B)<-12R->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        #Requires rotations and color changes
+        self.assertTrue(self.fullRB.delete(99))
+        newResult = '(NoneB)<-12B->(2B,30B)\n'\
+                 '(12B)<-2B->(NoneB,NoneB)\n'\
+                 '(12B)<-30B->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        #Requires a color change
+        self.assertTrue(self.fullRB.delete(2))
+        newResult = '(NoneB)<-12B->(NoneB,30R)\n'\
+                 '(12B)<-30R->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        #Requires a color change
+        self.assertTrue(self.fullRB.delete(12))
+        newResult = '(NoneB)<-30B->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        #Requires a color change
+        self.assertTrue(self.fullRB.delete(30))
+        newResult = '(Empty)'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        for item in range(0,101):
+            self.assertFalse(self.fullRB.delete(item))
+            self.assertFalse(self.fullRB.find(item))
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        print("\ntestDeleteInternal PASSED")
+        
+    def testDeleteRoot(self):
+        self.assertEqual(self.fullRB.outputTesting(),self.result)
+        
+        #Requires color changes and a rotation
+        self.assertTrue(self.fullRB.delete(62))
+        newResult = '(NoneB)<-47B->(6B,93B)\n'\
+                 '(47B)<-6B->(3R,12R)\n'\
+                 '(47B)<-93B->(64B,97R)\n'\
+                 '(6B)<-3R->(2B,4B)\n'\
+                 '(6B)<-12R->(7B,30B)\n'\
+                 '(93B)<-64B->(NoneB,NoneB)\n'\
+                 '(93B)<-97R->(95B,98B)\n'\
+                 '(3R)<-2B->(NoneB,NoneB)\n'\
+                 '(3R)<-4B->(NoneB,5R)\n'\
+                 '(12R)<-7B->(NoneB,NoneB)\n'\
+                 '(12R)<-30B->(NoneB,NoneB)\n'\
+                 '(97R)<-95B->(NoneB,NoneB)\n'\
+                 '(97R)<-98B->(NoneB,99R)\n'\
+                 '(4B)<-5R->(NoneB,NoneB)\n'\
+                 '(98B)<-99R->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        #Requires color changes
+        self.assertTrue(self.fullRB.delete(47))
+        newResult = '(NoneB)<-30B->(6B,93B)\n'\
+                 '(30B)<-6B->(3R,12B)\n'\
+                 '(30B)<-93B->(64B,97R)\n'\
+                 '(6B)<-3R->(2B,4B)\n'\
+                 '(6B)<-12B->(7R,NoneB)\n'\
+                 '(93B)<-64B->(NoneB,NoneB)\n'\
+                 '(93B)<-97R->(95B,98B)\n'\
+                 '(3R)<-2B->(NoneB,NoneB)\n'\
+                 '(3R)<-4B->(NoneB,5R)\n'\
+                 '(12B)<-7R->(NoneB,NoneB)\n'\
+                 '(97R)<-95B->(NoneB,NoneB)\n'\
+                 '(97R)<-98B->(NoneB,99R)\n'\
+                 '(4B)<-5R->(NoneB,NoneB)\n'\
+                 '(98B)<-99R->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        #Requires color changes
+        self.assertTrue(self.fullRB.delete(30))
+        newResult = '(NoneB)<-12B->(6B,93B)\n'\
+                 '(12B)<-6B->(3R,7B)\n'\
+                 '(12B)<-93B->(64B,97R)\n'\
+                 '(6B)<-3R->(2B,4B)\n'\
+                 '(6B)<-7B->(NoneB,NoneB)\n'\
+                 '(93B)<-64B->(NoneB,NoneB)\n'\
+                 '(93B)<-97R->(95B,98B)\n'\
+                 '(3R)<-2B->(NoneB,NoneB)\n'\
+                 '(3R)<-4B->(NoneB,5R)\n'\
+                 '(97R)<-95B->(NoneB,NoneB)\n'\
+                 '(97R)<-98B->(NoneB,99R)\n'\
+                 '(4B)<-5R->(NoneB,NoneB)\n'\
+                 '(98B)<-99R->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        #Requires color changes and 2 rotations
+        self.assertTrue(self.fullRB.delete(12))
+        newResult = '(NoneB)<-7B->(3B,93B)\n'\
+                 '(7B)<-3B->(2B,5R)\n'\
+                 '(7B)<-93B->(64B,97R)\n'\
+                 '(3B)<-2B->(NoneB,NoneB)\n'\
+                 '(3B)<-5R->(4B,6B)\n'\
+                 '(93B)<-64B->(NoneB,NoneB)\n'\
+                 '(93B)<-97R->(95B,98B)\n'\
+                 '(5R)<-4B->(NoneB,NoneB)\n'\
+                 '(5R)<-6B->(NoneB,NoneB)\n'\
+                 '(97R)<-95B->(NoneB,NoneB)\n'\
+                 '(97R)<-98B->(NoneB,99R)\n'\
+                 '(98B)<-99R->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        #Requires color changes
+        self.assertTrue(self.fullRB.delete(7))
+        newResult = '(NoneB)<-6B->(3B,93B)\n'\
+                 '(6B)<-3B->(2B,5B)\n'\
+                 '(6B)<-93B->(64B,97R)\n'\
+                 '(3B)<-2B->(NoneB,NoneB)\n'\
+                 '(3B)<-5B->(4R,NoneB)\n'\
+                 '(93B)<-64B->(NoneB,NoneB)\n'\
+                 '(93B)<-97R->(95B,98B)\n'\
+                 '(5B)<-4R->(NoneB,NoneB)\n'\
+                 '(97R)<-95B->(NoneB,NoneB)\n'\
+                 '(97R)<-98B->(NoneB,99R)\n'\
+                 '(98B)<-99R->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        #Requires a color change
+        self.assertTrue(self.fullRB.delete(6))
+        newResult = '(NoneB)<-5B->(3B,93B)\n'\
+                 '(5B)<-3B->(2B,4B)\n'\
+                 '(5B)<-93B->(64B,97R)\n'\
+                 '(3B)<-2B->(NoneB,NoneB)\n'\
+                 '(3B)<-4B->(NoneB,NoneB)\n'\
+                 '(93B)<-64B->(NoneB,NoneB)\n'\
+                 '(93B)<-97R->(95B,98B)\n'\
+                 '(97R)<-95B->(NoneB,NoneB)\n'\
+                 '(97R)<-98B->(NoneB,99R)\n'\
+                 '(98B)<-99R->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        #Requires a rotation and color changes
+        self.assertTrue(self.fullRB.delete(5))
+        newResult = '(NoneB)<-93B->(4B,97B)\n'\
+                 '(93B)<-4B->(3B,64B)\n'\
+                 '(93B)<-97B->(95B,98B)\n'\
+                 '(4B)<-3B->(2R,NoneB)\n'\
+                 '(4B)<-64B->(NoneB,NoneB)\n'\
+                 '(97B)<-95B->(NoneB,NoneB)\n'\
+                 '(97B)<-98B->(NoneB,99R)\n'\
+                 '(3B)<-2R->(NoneB,NoneB)\n'\
+                 '(98B)<-99R->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        #Requires a rotation and color changes
+        self.assertTrue(self.fullRB.delete(93))
+        newResult = '(NoneB)<-64B->(3B,97B)\n'\
+                 '(64B)<-3B->(2B,4B)\n'\
+                 '(64B)<-97B->(95B,98B)\n'\
+                 '(3B)<-2B->(NoneB,NoneB)\n'\
+                 '(3B)<-4B->(NoneB,NoneB)\n'\
+                 '(97B)<-95B->(NoneB,NoneB)\n'\
+                 '(97B)<-98B->(NoneB,99R)\n'\
+                 '(98B)<-99R->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        #Requires color changes
+        self.assertTrue(self.fullRB.delete(64))
+        newResult = '(NoneB)<-4B->(3B,97R)\n'\
+                 '(4B)<-3B->(2R,NoneB)\n'\
+                 '(4B)<-97R->(95B,98B)\n'\
+                 '(3B)<-2R->(NoneB,NoneB)\n'\
+                 '(97R)<-95B->(NoneB,NoneB)\n'\
+                 '(97R)<-98B->(NoneB,99R)\n'\
+                 '(98B)<-99R->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        #Requires color changes
+        self.assertTrue(self.fullRB.delete(4))
+        newResult = '(NoneB)<-3B->(2B,97R)\n'\
+                 '(3B)<-2B->(NoneB,NoneB)\n'\
+                 '(3B)<-97R->(95B,98B)\n'\
+                 '(97R)<-95B->(NoneB,NoneB)\n'\
+                 '(97R)<-98B->(NoneB,99R)\n'\
+                 '(98B)<-99R->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        #Requires a rotation and color changes
+        self.assertTrue(self.fullRB.delete(3))
+        newResult = '(NoneB)<-97B->(2B,98B)\n'\
+                 '(97B)<-2B->(NoneB,95R)\n'\
+                 '(97B)<-98B->(NoneB,99R)\n'\
+                 '(2B)<-95R->(NoneB,NoneB)\n'\
+                 '(98B)<-99R->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        #Root color change
+        self.assertTrue(self.fullRB.delete(97))
+        newResult = '(NoneB)<-95B->(2B,98B)\n'\
+                 '(95B)<-2B->(NoneB,NoneB)\n'\
+                 '(95B)<-98B->(NoneB,99R)\n'\
+                 '(98B)<-99R->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        #Rotation and color changes
+        self.assertTrue(self.fullRB.delete(95))
+        newResult = '(NoneB)<-98B->(2B,99B)\n'\
+                 '(98B)<-2B->(NoneB,NoneB)\n'\
+                 '(98B)<-99B->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        #Requires a color change
+        self.assertTrue(self.fullRB.delete(98))
+        newResult = '(NoneB)<-2B->(NoneB,99R)\n'\
+                 '(2B)<-99R->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        #Root color change
+        self.assertTrue(self.fullRB.delete(2))
+        newResult = '(NoneB)<-99B->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        self.assertTrue(self.fullRB.delete(99))
+        newResult = '(Empty)'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        for item in range(0,101):
+            self.assertFalse(self.fullRB.delete(item))
+            self.assertFalse(self.fullRB.find(item))
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        print("\ntestDeleteRoot PASSED")
     
     def testDeleteTree(self):
         self.assertEqual(self.fullRB.outputTesting(),self.result)

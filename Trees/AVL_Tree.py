@@ -28,6 +28,12 @@
 #   root.BF = root.BF - 1 - max(child.BF,0)
 #   child.BF = child.BF - 1 + min(root.BF,0)
 
+# Height is at most 1.44 log(n+2)-0.328 < Red-Black Tree height
+# Therefore, time complexity:
+#       Search - avg/worst case: O(log n)
+#       Insert - avg/worst case: O(log n)
+#       Delete - avg/worst case: O(log n)
+
 from BST_recursive import BST
 from ADTs.Queue_head import Queue
 import random

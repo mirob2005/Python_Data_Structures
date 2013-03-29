@@ -1,8 +1,26 @@
 #Michael Robertson
 #mirob2005@gmail.com
-#Completed: 3/--/2013
+#Completed: 3/29/2013
 
 # Implements a Red-Black Tree
+# Similar to a BST except that each node has a color component, which is used
+#   to help ensure a balance tree.
+# The Red-Black tree must maintain these properties:
+#   1) Every node is either red or black.
+#   2) The root is black.
+#   3) Every leaf (NIL) is black.
+#   4) If a node is red, then both of its children is black.
+#   5) For each node, all simple paths from the node to descendant leaves must
+#       contain the same number of black nodes.
+
+#This implementation does not use include the NIL leaf nodes which saves space.
+#   Extra lines of code are required to check for a reference to a NIL node.
+
+# Height is at most 2 log(n+1) > AVL tree height
+# Therefore, time complexity:
+#       Search - avg/worst case: O(log n)
+#       Insert - avg/worst case: O(log n)
+#       Delete - avg/worst case: O(log n)
 
 from BST_recursive import BST
 from ADTs.Queue_head import Queue
@@ -20,7 +38,7 @@ class Node:
     def isLeftChild(self):
         if not self.parent:
             return False
-        if self.key < self.parent.key:
+        if self.parent.left == self:
             return True
         else:
             return False
@@ -28,7 +46,7 @@ class Node:
     def isRightChild(self):
         if not self.parent:
             return False
-        if self.key > self.parent.key:
+        if self.parent.right == self:
             return True
         else:
             return False
@@ -159,7 +177,7 @@ class RedBlackTree(BST):
         while root != self.root and root.color == False:
             if root.isLeftChild():
                 sibling = root.parent.right
-                if sibling.color == True:
+                if sibling and sibling.color == True:
                     #print('Setting %s Black'%sibling.key)
                     sibling.color = False
                     #print('Setting %s Red'%root.parent.key)
@@ -189,19 +207,19 @@ class RedBlackTree(BST):
                     root = self.root
             else:#root.isRightChild()
                 sibling = root.parent.left
-                if sibling.color == True:
+                if sibling and sibling.color == True:
                     #print('Setting %s Black'%sibling.key)
                     sibling.color = False
                     #print('Setting %s Red'%root.parent.key)
                     root.parent.color = True
                     self.rotateRight(root.parent)
                     sibling = root.parent.left
-                if (not sibling.left or sibling.left.color == False) and (not sibling.right or sibling.right.color == False):
+                if (sibling and (not sibling.left or sibling.left.color == False) and (not sibling.right or sibling.right.color == False)):
                     #print('Setting %s Red'%sibling.key)
                     sibling.color = True
                     root = root.parent
                 else:
-                    if not sibling.left or sibling.left.color == False:
+                    if sibling and (not sibling.left or sibling.left.color == False):
                         #print('Setting %s Black'%sibling.right.key)
                         sibling.right.color = False
                         #print('Setting %s Red'%sibling.key)
@@ -209,12 +227,13 @@ class RedBlackTree(BST):
                         self.rotateLeft(sibling)
                         sibling = root.parent.left
                     #print('Setting %s %s'%(sibling.key,'Red' if root.parent.color else "Black"))
-                    sibling.color = root.parent.color
+                    if sibling:
+                        sibling.color = root.parent.color
+                        #print('Setting %s Black'%sibling.left.key)
+                        if sibling.left:
+                            sibling.left.color = False
                     #print('Setting %s Black'%root.parent.key)
                     root.parent.color = False
-                    #print('Setting %s Black'%sibling.left.key)
-                    if sibling.left:
-                        sibling.left.color = False
                     self.rotateRight(root.parent)
                     root = self.root
         if root.color:
@@ -233,19 +252,17 @@ class RedBlackTree(BST):
             fix = True if not root.color else False
             #If leaf node:
             if(not root.left and not root.right):
+                if fix:
+                    self.checkColorAfterDelete(root)
                 #root node
                 if(not root.parent):
                     self.root = None
                     return True
                 elif(root.parent.right == root):
                     root.parent.right = None
-                    left = False
                 else:
                     root.parent.left = None
-                    left = True
                 parent = root.parent
-                if fix:
-                    self.checkColorAfterDelete(root)
                 root = None
                 return True
             #If only 1 child (right)
@@ -253,14 +270,15 @@ class RedBlackTree(BST):
                 #root node
                 if(not root.parent):
                     self.root = root.right
+                    self.root.color = False
                 elif(root.parent.right == root):
                     root.parent.right = root.right
                 else:
                     root.parent.left = root.right
+                if fix:
+                    self.checkColorAfterDelete(root.right)
                 root.right.parent = root.parent
                 parent = root.parent
-                if fix:
-                    self.checkColorAfterDelete(root)
                 root = None
                 return True
             #If only 1 child (left)
@@ -268,14 +286,15 @@ class RedBlackTree(BST):
                 #root node
                 if(not root.parent):
                     self.root = root.left
-                if(root.parent.right == root):
+                    self.root.color = False
+                elif(root.parent.right == root):
                     root.parent.right = root.left
                 else:
                     root.parent.left = root.left
+                if fix:
+                    self.checkColorAfterDelete(root.left)
                 root.left.parent = root.parent
                 parent = root.parent
-                if fix:
-                    self.checkColorAfterDelete(root)
                 root = None
                 return True
             #If 2 children
@@ -285,24 +304,25 @@ class RedBlackTree(BST):
                 while childptr.right:
                     childptr = childptr.right
                 root.key = childptr.key
-                root.color = childptr.color
                 fix = True if not childptr.color else False
                 #if replacement node has a left child
                 if(childptr.left):
+                    if fix:
+                        self.checkColorAfterDelete(childptr.left)
                     if(childptr.parent.right == childptr):
                         childptr.parent.right = childptr.left
                     else:
                         childptr.parent.left = childptr.left
                     childptr.left.parent = childptr.parent
                 else:
+                    if fix:
+                        self.checkColorAfterDelete(childptr)
                     if(childptr.parent.right == childptr):
                         childptr.parent.right = None
                     else:
                         childptr.parent.left = None
                 parent = childptr.parent
                 childptr = None
-                if fix:
-                    self.checkColorAfterDelete(parent)
                 return True
         elif(key > root.key):
             if(root.right):
@@ -396,10 +416,7 @@ if __name__ == '__main__':
     #              46, 86, 52, 34, 42, 44, 36, 51, 72, 74, 67, 25, 70, 4, 78, 18,92, \
     #              23, 90, 2, 10, 13, 45, 56, 28, 100, 50, 91, 35, 33, 81, 61, 32, 8, 55]
     
-    
-
-    
-    listToInsert = [47,30,2,6,12,64,62]
+    listToInsert = [3,2,97,95,98,99]
     for value in listToInsert:
         print('Inserting %s'%value)
         rb.insert(value)
@@ -413,7 +430,7 @@ if __name__ == '__main__':
     
     print(rb.outputTesting())
     
-    rb.delete(1)
+    rb.delete(3)
     print(rb.outputTesting())
     #while True:
     #    try:
