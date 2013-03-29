@@ -444,7 +444,7 @@ class TestRedBlackTree(unittest.TestCase):
         #Delete requires color changes
         self.assertTrue(self.fullRB.delete(5))
         newResult = '(NoneB)<-62B->(6B,93B)\n'\
-                 '(62B)<-6B->(4R,30R)\n'\
+                 '(62B)<-6B->(4B,30R)\n'\
                  '(62B)<-93B->(64B,97R)\n'\
                  '(6B)<-4B->(3R,NoneB)\n'\
                  '(6B)<-30R->(12B,47B)\n'\
@@ -460,7 +460,7 @@ class TestRedBlackTree(unittest.TestCase):
         #Delete requires color changes
         self.assertTrue(self.fullRB.delete(12))
         newResult = '(NoneB)<-62B->(6B,93B)\n'\
-                 '(62B)<-6B->(4R,30R)\n'\
+                 '(62B)<-6B->(4B,30B)\n'\
                  '(62B)<-93B->(64B,97R)\n'\
                  '(6B)<-4B->(3R,NoneB)\n'\
                  '(6B)<-30B->(NoneB,47R)\n'\
@@ -471,6 +471,72 @@ class TestRedBlackTree(unittest.TestCase):
                  '(97R)<-95B->(NoneB,NoneB)\n'\
                  '(97R)<-98B->(NoneB,NoneB)\n'
         self.assertEqual(self.fullRB.outputTesting(),newResult)
+
+        #Delete requires color changes
+        self.assertTrue(self.fullRB.delete(98))
+        newResult = '(NoneB)<-62B->(6B,93B)\n'\
+                 '(62B)<-6B->(4B,30B)\n'\
+                 '(62B)<-93B->(64B,97B)\n'\
+                 '(6B)<-4B->(3R,NoneB)\n'\
+                 '(6B)<-30B->(NoneB,47R)\n'\
+                 '(93B)<-64B->(NoneB,NoneB)\n'\
+                 '(93B)<-97B->(95R,NoneB)\n'\
+                 '(4B)<-3R->(NoneB,NoneB)\n'\
+                 '(30B)<-47R->(NoneB,NoneB)\n'\
+                 '(97B)<-95R->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        #Delete requires color changes and rotations
+        self.assertTrue(self.fullRB.delete(64))
+        newResult = '(NoneB)<-62B->(6B,95B)\n'\
+                 '(62B)<-6B->(4B,30B)\n'\
+                 '(62B)<-95B->(93B,97B)\n'\
+                 '(6B)<-4B->(3R,NoneB)\n'\
+                 '(6B)<-30B->(NoneB,47R)\n'\
+                 '(95B)<-93B->(NoneB,NoneB)\n'\
+                 '(95B)<-97B->(NoneB,NoneB)\n'\
+                 '(4B)<-3R->(NoneB,NoneB)\n'\
+                 '(30B)<-47R->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        #Deletes don't require color changes or rotations
+        self.assertTrue(self.fullRB.delete(3))
+        self.assertTrue(self.fullRB.delete(47))
+
+        #Delete requires color changes
+        self.assertTrue(self.fullRB.delete(4))
+        newResult = '(NoneB)<-62B->(6B,95R)\n'\
+                 '(62B)<-6B->(NoneB,30R)\n'\
+                 '(62B)<-95R->(93B,97B)\n'\
+                 '(6B)<-30R->(NoneB,NoneB)\n'\
+                 '(95R)<-93B->(NoneB,NoneB)\n'\
+                 '(95R)<-97B->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        #Delete requires color changes
+        self.assertTrue(self.fullRB.delete(97))
+        newResult = '(NoneB)<-62B->(6B,95B)\n'\
+                 '(62B)<-6B->(NoneB,30R)\n'\
+                 '(62B)<-95B->(93R,NoneB)\n'\
+                 '(6B)<-30R->(NoneB,NoneB)\n'\
+                 '(95B)<-93R->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        #Deletes don't require color changes or rotations
+        self.assertTrue(self.fullRB.delete(30))
+        self.assertTrue(self.fullRB.delete(93))
+        
+        #Delete requires color changes
+        self.assertTrue(self.fullRB.delete(95))
+        newResult = '(NoneB)<-62B->(6R,NoneB)\n'\
+                 '(62B)<-6R->(NoneB,NoneB)\n'
+        self.assertEqual(self.fullRB.outputTesting(),newResult)
+        
+        #Deletes don't require color changes or rotations
+        self.assertTrue(self.fullRB.delete(6))
+        self.assertTrue(self.fullRB.delete(62))
+        
+        self.assertEqual(self.fullRB.outputTesting(),'(Empty)')
         
         print("\ntestDeleteLeaf PASSED")
         

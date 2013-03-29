@@ -156,7 +156,7 @@ class RedBlackTree(BST):
     def checkColorAfterDelete(self,root):
         #print('Fixing color for key %s'%root.key)
         #print('Node Color: %s'%root.color)
-        if root != self.root and root.color == False:
+        while root != self.root and root.color == False:
             if root.isLeftChild():
                 sibling = root.parent.right
                 if sibling.color == True:
@@ -166,12 +166,12 @@ class RedBlackTree(BST):
                     root.parent.color = True
                     self.rotateLeft(root.parent)
                     sibling = root.parent.right
-                if sibling.left.color == False and sibling.right.color == False:
+                if (not sibling.left or sibling.left.color == False) and (not sibling.right or sibling.right.color == False):
                     #print('Setting %s Red'%sibling.key)
                     sibling.color = True
-                    self.checkColorAfterDelete(root.parent)
+                    root = root.parent
                 else:
-                    if sibling.right.color == False:
+                    if not sibling.right or sibling.right.color == False:
                         #print('Setting %s Black'%sibling.left.key)
                         sibling.left.color = False
                         #print('Setting %s Red'%sibling.key)
@@ -183,9 +183,10 @@ class RedBlackTree(BST):
                     #print('Setting %s Black'%root.parent.key)
                     root.parent.color = False
                     #print('Setting %s Black'%sibling.right.key)
-                    sibling.right.color = False
+                    if sibling.right:
+                        sibling.right.color = False
                     self.rotateLeft(root.parent)
-                    self.checkColorAfterDelete(self.root)
+                    root = self.root
             else:#root.isRightChild()
                 sibling = root.parent.left
                 if sibling.color == True:
@@ -195,12 +196,12 @@ class RedBlackTree(BST):
                     root.parent.color = True
                     self.rotateRight(root.parent)
                     sibling = root.parent.left
-                if sibling.left.color == False and sibling.right.color == False:
+                if (not sibling.left or sibling.left.color == False) and (not sibling.right or sibling.right.color == False):
                     #print('Setting %s Red'%sibling.key)
                     sibling.color = True
-                    self.checkColorAfterDelete(root.parent)
+                    root = root.parent
                 else:
-                    if sibling.left.color == False:
+                    if not sibling.left or sibling.left.color == False:
                         #print('Setting %s Black'%sibling.right.key)
                         sibling.right.color = False
                         #print('Setting %s Red'%sibling.key)
@@ -212,14 +213,14 @@ class RedBlackTree(BST):
                     #print('Setting %s Black'%root.parent.key)
                     root.parent.color = False
                     #print('Setting %s Black'%sibling.left.key)
-                    sibling.left.color = False
+                    if sibling.left:
+                        sibling.left.color = False
                     self.rotateRight(root.parent)
-                    self.checkColorAfterDelete(self.root)
-        if self.root.color:
+                    root = self.root
+        if root.color:
             pass
-            #print('Setting %s Black'%self.root.key)
-        self.root.color = False
-        
+            #print('Setting %s Black'%root.key)
+        root.color = False
     
     def delete(self, key, root=None):
         #replace using inorder predecessor
@@ -238,12 +239,14 @@ class RedBlackTree(BST):
                     return True
                 elif(root.parent.right == root):
                     root.parent.right = None
+                    left = False
                 else:
                     root.parent.left = None
+                    left = True
                 parent = root.parent
-                root = None
                 if fix:
-                    self.checkColorAfterDelete(parent)
+                    self.checkColorAfterDelete(root)
+                root = None
                 return True
             #If only 1 child (right)
             elif(not root.left and root.right):
@@ -256,9 +259,9 @@ class RedBlackTree(BST):
                     root.parent.left = root.right
                 root.right.parent = root.parent
                 parent = root.parent
-                root = None
                 if fix:
-                    self.checkColorAfterDelete(parent)
+                    self.checkColorAfterDelete(root)
+                root = None
                 return True
             #If only 1 child (left)
             elif(root.left and not root.right):
@@ -271,9 +274,9 @@ class RedBlackTree(BST):
                     root.parent.left = root.left
                 root.left.parent = root.parent
                 parent = root.parent
-                root = None
                 if fix:
-                    self.checkColorAfterDelete(parent)
+                    self.checkColorAfterDelete(root)
+                root = None
                 return True
             #If 2 children
             else:
