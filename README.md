@@ -51,20 +51,6 @@ Unit Tests to test all 3 types and each operation
 
 Unit Tests to test each operation for both types
 
-## *Splay Tree Operations:*
-- insert (splaying added)
-- find (splaying added for valid/invalid finds)
-- delete (splaying added for valid/invalid deletes)
-- copyTree (redefined due to the structure of the splay tree varying based off order of inserts)
-- findRecentAccessed (returns the root, only useful for a splay tree)
-- splay (rotates the tree so that the most recent inserted/found node or parent of a recent delete is rotated to the root)
-
-- All redefined operations are recursive.
-
-### *Rest of the operations are inherited from the recursive BST*
-
-Unit Tests to test each operation and valid splaying.
-
 ## *AVL Tree Operations:*
 - insert (Balance Factor Calculations added)
 - delete (Balance Factor Calculations added)
@@ -79,6 +65,34 @@ Unit Tests to test each operation and valid splaying.
 ### *Rest of the operations are inherited from the recursive BST*
 
 Unit Tests to test each operation and valid rotations.
+
+## *Red-Black Tree Operations:*
+- insert (Color Check added)
+- delete (Color Check added)
+- deleteTree (Same as AVL)
+- checkColor (determines the new coloring and if any rotations are needed - version for post-insert and post-delete)
+- rotateLeft (Same as AVL)
+- rotateRight (Same as AVL)
+
+- All redefined operations are recursive.
+
+### *Rest of the operations are inherited from the recursive BST*
+
+Unit Tests to test each operation, valid rotations and correct coloring.
+
+## *Splay Tree Operations:*
+- insert (splaying added)
+- find (splaying added for valid/invalid finds)
+- delete (splaying added for valid/invalid deletes)
+- copyTree (redefined due to the structure of the splay tree varying based off order of inserts)
+- findRecentAccessed (returns the root, only useful for a splay tree)
+- splay (rotates the tree so that the most recent inserted/found node or parent of a recent delete is rotated to the root)
+
+- All redefined operations are recursive.
+
+### *Rest of the operations are inherited from the recursive BST*
+
+Unit Tests to test each operation and valid splaying.
 
 ## *Binary Heap Operations:*
 - traverseBFS
@@ -140,5 +154,4 @@ Tested using language provided sort method to compare the result on a random.shu
 Unit tests to test each operation
 
 ## *TODO:*
-- Self-balancing BST - Red-Black Tree
 - Graphs (various types), impl. objects/ptrs, adjacency L/M, incidence L/M
