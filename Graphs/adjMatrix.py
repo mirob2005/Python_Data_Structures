@@ -9,6 +9,8 @@
 # Undirected affects the indices for both A->B and B->A whereas directed
 #   only affects the direct declared in the addEdge command
 
+from ADTs.Queue_head import Queue
+
 class AdjMatrix:
     def __init__(self, directed=False):
         self.directed = directed
@@ -17,7 +19,10 @@ class AdjMatrix:
         self.numVertices = 0
         
     def __str__(self):
-        string = ''
+        string = 'Dest Vert:'
+        for key in sorted(self.vertexList, key=self.vertexList.get):
+            string += '%7s'%key
+        string +='\n'
         for key in sorted(self.vertexList, key=self.vertexList.get):
             string += ('Vertex \'%s\': ['%(key))
             for item in self.matrix[self.vertexList[key]]:
@@ -101,32 +106,43 @@ class AdjMatrix:
                 self.vertexList[key] -= 1
         return True
     
-    def traverseDFS(self):
+    def traverseDFS(self,source):
         pass
     
-    def traverseBFS(self):
-        pass
+    def traverseBFS(self,source):
+        bfsQ = Queue()
+        distanceTo = {}
+        if not source in self.vertexList:
+            print('Vertex %s does not exist'%source)
+            return False
+        bfsQ.enQueue(source)
+        cur = bfsQ.deQueue()
+        distanceTo[cur] = 0
+        while cur!=None:
+            index = self.vertexList[cur]
+            destIndex = 0
+            for edge in self.matrix[index]:
+                if edge:
+                    for key,value in self.vertexList.items():
+                        if value == destIndex:
+                            if not key in distanceTo:
+                                bfsQ.enQueue(key)
+                                distanceTo[key] = distanceTo[cur]+1
+                destIndex+=1
+            cur = bfsQ.deQueue()
+        return distanceTo
     
     
 if __name__ == '__main__':
     am = AdjMatrix(True)
     
-    am.addVertex('A')
-    am.addVertex('B')
-    am.addVertex('C')
+    for vertex in ['r','s','t','u','v','w','x','y']:
+        am.addVertex(vertex)
     
     print(am)
     
-    am.addEdge('B','C')
+    for source,dest in [('r','v'),('r','s'),('s','w'),('w','t'),('w','x'),('t','x'),('t','u'),('x','u'),('x','y'),('u','y')]:
+        am.addEdge(source,dest)
     print(am)
     
-    am.removeVertex('A')
-    
-    print(am)
-    
-    am.addVertex('A')
-    print(am)
-    
-    print('A' in am)
-    for item in am:
-        print(item)
+    print(am.traverseBFS('r'))
