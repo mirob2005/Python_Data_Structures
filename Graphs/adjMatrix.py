@@ -140,7 +140,12 @@ class AdjMatrix:
                     if value == destIndex:
                         #If vertex is undiscovered
                         if visit[key] == None:
+                            print('Edge %s to %s is a tree edge'%(source,key))
                             string += self.DFS(key,visit)
+                        elif visit[key] == False:
+                            print('Edge %s to %s is a back edge'%(source,key))
+                        else:
+                            print('Edge %s to %s is a forward/cross edge'%(source,key))
             destIndex+=1
         visit[source] = True
         string += ' %s)'%source
@@ -171,6 +176,19 @@ class AdjMatrix:
             cur = bfsQ.deQueue()
         return distanceTo
     
+    def shortestPath(self,source,dest):
+        if not source in self.vertexList:
+            print('Vertex %s does not exist'%source)
+            return False
+        if not dest in self.vertexList:
+            print('Vertex %s does not exist'%dest)
+            return False
+        distance = self.traverseBFS(source)
+        if not dest in distance:
+            print('Vertex %s is not reachable from %s'%(dest,source))
+            return False
+        return distance[dest]
+        
     
 if __name__ == '__main__':
     am = AdjMatrix(True)
@@ -182,8 +200,11 @@ if __name__ == '__main__':
         am.addEdge(source,dest)
         
     print(am)
-    print(am.traverseBFS('r'))
-    print(am.traverseDFS())
+    print('BFS: %s'%am.traverseBFS('r'))
+    print('DFS: %s'%am.traverseDFS())
+    source = 'r'
+    dest = 'y'
+    print('Shortest Path from %s to %s is %s'%(source,dest,am.shortestPath(source,dest)))
     print('\n_________________________________\n')
     
     dfs = AdjMatrix(True)
@@ -194,5 +215,8 @@ if __name__ == '__main__':
         dfs.addEdge(source,dest)
         
     print(dfs)
-    print(dfs.traverseBFS('s'))
-    print(dfs.traverseDFS())
+    print('BFS: %s'%dfs.traverseBFS('s'))
+    print('DFS: %s'%dfs.traverseDFS())
+    source = 't'
+    dest = 'y'
+    print('Shortest Path from %s to %s is %s'%(source,dest,dfs.shortestPath(source,dest)))
