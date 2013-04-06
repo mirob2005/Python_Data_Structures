@@ -204,7 +204,29 @@ class AdjList:
                 self.copy(neighbor,copy)
         source.visit = True
         
+    def topologicalSort(self):
+        if not self.isDAG():
+            return None
+        order = []
+        for key, vertex in self.vertexList.items():
+            vertex.visit = None
+        for key, vertex in sorted(self.vertexList.items()):
+            #If any undiscovered vertices remain, they become the new source
+            if vertex.visit == None:
+                order += self.DFSorder(vertex)
+        order.reverse()
+        return order
     
+    def DFSorder(self,source):
+        source.visit = False
+        order = []
+        for neighbor in source.next:
+            if neighbor.visit == None:
+                order += self.DFSorder(neighbor)
+        source.visit = True
+        order += [source.name]
+        return order
+
 if __name__ == '__main__':
     print('DAG:')
     dag = AdjList(True)
@@ -215,7 +237,9 @@ if __name__ == '__main__':
     
     print(dag)
     print('BFS:\n%s'%dag.traverseBFS('s'))
-    print('\nDFS:\n%s'%dag.traverseDFS())
+    print('\nDFS: %s'%dag.traverseDFS())
+
+    print('Topological Sort: %s'%dag.topologicalSort())
     
     print('\n\nTesting Copy Directed:\n')
     copy = dag.copyGraph()
