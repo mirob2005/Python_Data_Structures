@@ -127,7 +127,7 @@ class AdjList:
     def traverseDFS(self):
         #Used to keep track if vertex is undiscovered(None), discovered(False),
         #   or fully explored (True)
-        print('Edge Classifications:')
+        #print('Edge Classifications:')
         string = ''
         for key, vertex in self.vertexList.items():
             vertex.visit = None
@@ -142,13 +142,14 @@ class AdjList:
         string = '(%s '%source.name
         for neighbor in source.next:
             if neighbor.visit == None:
-                print('Edge %s to %s is a tree edge'%(source.name,neighbor.name))
+                #print('Edge %s to %s is a tree edge'%(source.name,neighbor.name))
                 string += self.DFS(neighbor)
             elif neighbor.visit == False:
                 self.cycleExists = True
-                print('Edge %s to %s is a back edge'%(source.name,neighbor.name))
+                #print('Edge %s to %s is a back edge'%(source.name,neighbor.name))
             else:
-                print('Edge %s to %s is a forward/cross edge'%(source.name,neighbor.name))
+                pass
+                #print('Edge %s to %s is a forward/cross edge'%(source.name,neighbor.name))
         source.visit = True
         string += ' %s)'%source.name
         return string
@@ -180,7 +181,29 @@ class AdjList:
         return not self.cycleExists
     
     def copyGraph(self):
-        pass
+        copy = AdjList(self.directed)
+        for key, vertex in self.vertexList.items():
+            vertex.visit = None
+        for key, vertex in sorted(self.vertexList.items()):
+            #If any undiscovered vertices remain, they become the new source
+            if vertex.visit == None:
+                #print('New Vertex* %s'%vertex.name)
+                copy.vertexList[vertex.name] = Vertex(vertex.name)
+                self.copy(vertex,copy)
+        return copy
+            
+    def copy(self,source,copy):
+        source.visit = False
+        for neighbor in source.next:
+            if not neighbor.name in copy.vertexList:
+                #print('New Vertex %s'%neighbor.name)
+                copy.vertexList[neighbor.name] = Vertex(neighbor.name)
+            #print('Adding neighbor %s to %s'%(neighbor.name,source.name))
+            copy.vertexList[source.name].next.append(copy.vertexList[neighbor.name])
+            if neighbor.visit == None:
+                self.copy(neighbor,copy)
+        source.visit = True
+        
     
 if __name__ == '__main__':
     print('DAG:')
@@ -194,13 +217,25 @@ if __name__ == '__main__':
     print('BFS:\n%s'%dag.traverseBFS('s'))
     print('\nDFS:\n%s'%dag.traverseDFS())
     
+    print('\n\nTesting Copy Directed:\n')
+    copy = dag.copyGraph()
+    print(copy)
+    print('BFS:\n%s'%copy.traverseBFS('s'))
+    print('\nDFS:\n%s'%copy.traverseDFS())
+    print('Graph is a DAG: %s'%copy.isDAG())
+    
+    copy.removeVertex('v')
+    print(copy)
+    print('\nDFS:\n%s'%copy.traverseDFS())
+    print(dag)
+    
     print('After Delete Vertex r:')
     dag.removeVertex('r')
-
+    
     print(dag)
     print('BFS:\n%s'%dag.traverseBFS('s'))
     print('\nDFS:\n%s'%dag.traverseDFS())
-
+    
     print('After Delete Edge x->u:')
     dag.removeEdge('x','u')
     
@@ -213,7 +248,9 @@ if __name__ == '__main__':
     dag.removeEdge('x','y')
     print('Shortest Path after delete edge x->y: %s'%dag.shortestPath('s','y'))
     
-    print('Graph is a DAG: %s'%dag.isDAG())
+    print('\nGraph is a DAG: %s'%dag.isDAG())
+    
+    print('\nCopy:\n%s'%copy)
     
     print('__________________________\n')
     
@@ -226,7 +263,13 @@ if __name__ == '__main__':
     
     print(undirected)
     print('BFS:\n%s'%undirected.traverseBFS('s'))
-    print('\nDFS:\n%s'%undirected.traverseDFS())    
+    print('\nDFS:\n%s'%undirected.traverseDFS())
+    
+    print('\nTesting Copy Undirected:')
+    copy2 = undirected.copyGraph()
+    print(copy2)
+    print('BFS:\n%s'%copy2.traverseBFS('s'))
+    print('\nDFS:\n%s'%copy2.traverseDFS())
     
     print('After Delete Vertex r:')
     undirected.removeVertex('r')
@@ -243,7 +286,11 @@ if __name__ == '__main__':
     print('Shortest Path: %s'%undirected.shortestPath('v','y'))
     print('Shortest Path: %s'%undirected.shortestPath('s','y'))
     undirected.removeEdge('x','y')
-
+    
     print('Shortest Path after delete edge x->y: %s'%undirected.shortestPath('s','y'))
     
     print('Graph is a DAG: %s'%undirected.isDAG())
+    
+    print('\nUnchanged Copy:\n%s'%copy2)
+    copy2.removeVertex('r')
+    print('Removing vertex r:\n%s'%copy2)
