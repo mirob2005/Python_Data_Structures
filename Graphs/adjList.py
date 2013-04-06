@@ -227,6 +227,49 @@ class AdjList:
         order += [source.name]
         return order
 
+    def stronglyConnectedComponents(self):
+        #Get order of finishing times for normal graph
+        order = self.topologicalSort()
+        #Compute the transpose of the graph
+        transpose = self.computeTranspose()
+        #Traverse DFS for the tranpose using the order from the topoloical sort for the vertices
+        components = transpose.transposeDFS(order)
+        #Returns any strongly connected components (mutually reachable vertices)
+        return components
+
+    def transposeDFS(self,order):
+        string = ''
+        for key, vertex in self.vertexList.items():
+            vertex.visit = None
+        #Traverse in the order of the topological sort ->
+        #   order of decreasing finishing times
+        for vertex in order:
+            #If any undiscovered vertices remain, they become the new source
+            if self.vertexList[vertex].visit == None:
+                string += self.DFS(self.vertexList[vertex])
+        return string
+
+    def computeTranspose(self):
+        transpose = AdjList(self.directed)
+        for key, vertex in self.vertexList.items():
+            vertex.visit = None
+        for key, vertex in sorted(self.vertexList.items()):
+            if vertex.visit == None:
+                transpose.vertexList[vertex.name] = Vertex(vertex.name)
+                self.transpose(vertex,transpose)
+        return transpose
+
+    def transpose(self,source,transpose):
+        source.visit = False
+        for neighbor in source.next:
+            if not neighbor.name in transpose.vertexList:
+                transpose.vertexList[neighbor.name] = Vertex(neighbor.name)
+            #Edge goes from the neighbor to the source (reverse of copy() for transpose)
+            transpose.vertexList[neighbor.name].next.append(transpose.vertexList[source.name])
+            if neighbor.visit == None:
+                self.transpose(neighbor,transpose)
+        source.visit = True
+
 if __name__ == '__main__':
     print('DAG:')
     dag = AdjList(True)
@@ -240,6 +283,9 @@ if __name__ == '__main__':
     print('\nDFS: %s'%dag.traverseDFS())
 
     print('Topological Sort: %s'%dag.topologicalSort())
+    transpose = dag.computeTranspose()
+    print('\nTranspose of dag:\n%s'%transpose)
+    print('Strongly Connected Components: %s\n'%dag.stronglyConnectedComponents())
     
     print('\n\nTesting Copy Directed:\n')
     copy = dag.copyGraph()
