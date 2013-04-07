@@ -207,15 +207,7 @@ class AdjList:
     def topologicalSort(self):
         if not self.isDAG():
             return None
-        order = []
-        for key, vertex in self.vertexList.items():
-            vertex.visit = None
-        for key, vertex in sorted(self.vertexList.items()):
-            #If any undiscovered vertices remain, they become the new source
-            if vertex.visit == None:
-                order += self.DFSorder(vertex)
-        order.reverse()
-        return order
+        return self.getOrder()
     
     def DFSorder(self,source):
         source.visit = False
@@ -229,13 +221,25 @@ class AdjList:
 
     def stronglyConnectedComponents(self):
         #Get order of finishing times for normal graph
-        order = self.topologicalSort()
+        order = self.getOrder()
         #Compute the transpose of the graph
         transpose = self.computeTranspose()
         #Traverse DFS for the tranpose using the order from the topoloical sort for the vertices
         components = transpose.transposeDFS(order)
         #Returns any strongly connected components (mutually reachable vertices)
         return components
+    
+    #Same as topological sort but ignores the DAG requirement
+    def getOrder(self):
+        order = []
+        for key, vertex in self.vertexList.items():
+            vertex.visit = None
+        for key, vertex in sorted(self.vertexList.items()):
+            #If any undiscovered vertices remain, they become the new source
+            if vertex.visit == None:
+                order += self.DFSorder(vertex)
+        order.reverse()
+        return order
 
     def transposeDFS(self,order):
         string = ''
@@ -269,98 +273,3 @@ class AdjList:
             if neighbor.visit == None:
                 self.transpose(neighbor,transpose)
         source.visit = True
-
-if __name__ == '__main__':
-    print('DAG:')
-    dag = AdjList(True)
-    for vertex in ['r','s','t','u','v','w','x','y']:
-        dag.addVertex(vertex)
-    for source,dest in [('r','s'),('r','v'),('s','w'),('w','t'),('w','x'),('t','x'),('t','u'),('x','u'),('x','y'),('u','y')]:
-        dag.addEdge(source,dest)
-    
-    print(dag)
-    print('BFS:\n%s'%dag.traverseBFS('s'))
-    print('\nDFS: %s'%dag.traverseDFS())
-
-    print('Topological Sort: %s'%dag.topologicalSort())
-    transpose = dag.computeTranspose()
-    print('\nTranspose of dag:\n%s'%transpose)
-    print('Strongly Connected Components: %s\n'%dag.stronglyConnectedComponents())
-    
-    print('\n\nTesting Copy Directed:\n')
-    copy = dag.copyGraph()
-    print(copy)
-    print('BFS:\n%s'%copy.traverseBFS('s'))
-    print('\nDFS:\n%s'%copy.traverseDFS())
-    print('Graph is a DAG: %s'%copy.isDAG())
-    
-    copy.removeVertex('v')
-    print(copy)
-    print('\nDFS:\n%s'%copy.traverseDFS())
-    print(dag)
-    
-    print('After Delete Vertex r:')
-    dag.removeVertex('r')
-    
-    print(dag)
-    print('BFS:\n%s'%dag.traverseBFS('s'))
-    print('\nDFS:\n%s'%dag.traverseDFS())
-    
-    print('After Delete Edge x->u:')
-    dag.removeEdge('x','u')
-    
-    print(dag)
-    print('BFS:\n%s'%dag.traverseBFS('s'))
-    print('\nDFS:\n%s'%dag.traverseDFS())
-    
-    print('Shortest Path: %s'%dag.shortestPath('v','y'))
-    print('Shortest Path: %s'%dag.shortestPath('s','y'))
-    dag.removeEdge('x','y')
-    print('Shortest Path after delete edge x->y: %s'%dag.shortestPath('s','y'))
-    
-    print('\nGraph is a DAG: %s'%dag.isDAG())
-    
-    print('\nCopy:\n%s'%copy)
-    
-    print('__________________________\n')
-    
-    print('Undirected Graph:')
-    undirected = AdjList(False)
-    for vertex in ['r','s','t','u','v','w','x','y']:
-        undirected.addVertex(vertex)
-    for source,dest in [('r','s'),('r','v'),('s','w'),('w','t'),('w','x'),('t','x'),('t','u'),('x','u'),('x','y'),('u','y')]:
-        undirected.addEdge(source,dest)
-    
-    print(undirected)
-    print('BFS:\n%s'%undirected.traverseBFS('s'))
-    print('\nDFS:\n%s'%undirected.traverseDFS())
-    
-    print('\nTesting Copy Undirected:')
-    copy2 = undirected.copyGraph()
-    print(copy2)
-    print('BFS:\n%s'%copy2.traverseBFS('s'))
-    print('\nDFS:\n%s'%copy2.traverseDFS())
-    
-    print('After Delete Vertex r:')
-    undirected.removeVertex('r')
-    print(undirected)
-    print('BFS:\n%s'%undirected.traverseBFS('s'))
-    print('\nDFS:\n%s'%undirected.traverseDFS())    
-    
-    print('After Delete Edge x->u:')
-    undirected.removeEdge('x','u')
-    print(undirected)
-    print('BFS:\n%s'%undirected.traverseBFS('s'))
-    print('\nDFS:\n%s'%undirected.traverseDFS())
-    
-    print('Shortest Path: %s'%undirected.shortestPath('v','y'))
-    print('Shortest Path: %s'%undirected.shortestPath('s','y'))
-    undirected.removeEdge('x','y')
-    
-    print('Shortest Path after delete edge x->y: %s'%undirected.shortestPath('s','y'))
-    
-    print('Graph is a DAG: %s'%undirected.isDAG())
-    
-    print('\nUnchanged Copy:\n%s'%copy2)
-    copy2.removeVertex('r')
-    print('Removing vertex r:\n%s'%copy2)
