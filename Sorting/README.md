@@ -6,6 +6,11 @@
 - O(n) best case, O(n log n) AVG/worst case performance
 - O(1) auxiliary space
 
+### Selection Sort:
+- stable, in-place
+- O(n^2) best/AVG/worst case performance
+- O(1) auxiliary space
+
 ## Merge Sorts:
 ### MergeSort:
 - not in place, stable sort
