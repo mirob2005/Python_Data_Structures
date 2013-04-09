@@ -11,8 +11,9 @@ if __name__ == '__main__':
         
     print(cycle)
     print('BFS:\n%s'%cycle.traverseBFS('s'))
-    print('\nDFS: %s'%cycle.traverseDFS())
+    print('\nDFS: %s\n'%cycle.traverseDFS())
     
+    print('Graph is a DAG: %s'%cycle.isDAG())
     print('Topological Sort: %s'%cycle.topologicalSort())
     print('Strongly Connected Components: %s\n'%cycle.stronglyConnectedComponents())
     
