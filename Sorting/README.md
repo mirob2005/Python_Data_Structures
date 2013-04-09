@@ -18,9 +18,16 @@
 - O(n log n) best/AVG, O(n^2) worst case performance
 - O(n) auxiliary space
 - fastest on average
+
 ### BubbleSort:
 - stable, in-place
 - O(n^2) - worst/AVG case, O(n) - best case (already sorted list)
-- O(1) auxilary - worst case space complexity 
+- O(1) auxilary - worst case space complexity
+
+## Insertion Sorts:
+### Insertion Sort:
+- stable, in-place
+- O(n^2) - worst/AVG case, O(n) - best case (already sorted list)
+- O(1) auxilary - worst case space complexity
 
 All tested using language provided sort method to compare the result on a random.shuffle() list
