@@ -19,26 +19,57 @@
 </table>
 
 ## *Adjacency List:*
+- Vertices are stored in a dictionary. Each vertex has a list of neighboring vertices.
+- Supports direct and undirected graphs.
+
+### *Operations:*
+- addVertex
+- addEdge
+- removeVertex
+- removeEdge
+- copyGraph
+
+### *Algorithm:*
+*Breadth First Search*
+- traverseBFS
+- shortestPath
+
+*Depth First Search*
+- DAG test
+- traverseDFS
+- topological sort
+- find strongly connnected components
+- compute tranpose - used to find strongly connnected components
+- Classification of edges into: 
+1)Tree Edges 
+2)Back Edges 
+3)Forward/Cross Edges
 
 ## *Adjacency Matrix:*
 - Matrix is V rows and V columns. If a vertex V1 is adjacent to vertex V2, then the V1 row and V2 column entry in the matrix will be True or carry a weight (if weighted graph) else False or infinite weight. 
 - If the graph is undirected the matrix will equal it's own transpose
 
-## *Incidence List:*
-
-## *Incidence Matrix:*
-
-## *Operations:*
+### *Operations:*
 - addVertex
 - addEdge
 - removeVertex
 - removeEdge
 
-## *Algorithm:*
-### *Breadth First Search*
+### *Algorithm:*
+*Breadth First Search*
 - traverseBFS
 - shortestPath
 
-### *Depth First Search*
+*Depth First Search*
 - traverseDFS
-- Classification of edges into: 1)Tree Edges 2)Back Edges 3)Forward/Cross Edges
+- Classification of edges into: 
+1)Tree Edges 
+2)Back Edges 
+3)Forward/Cross Edges
+
+## *Incidence List:*
+- Not Implemented
+
+## *Incidence Matrix:*
+- Not Implemented
+
